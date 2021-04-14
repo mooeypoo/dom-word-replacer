@@ -1,0 +1,38 @@
+{
+  "name": "@mooeypoo/dom-word-replacer",
+  "version": "0.1.1",
+  "author": "Moriel Schottlender",
+  "license": "MIT",
+  "description": "A javascript library that allows replacing words in DOM documents.",
+  "main": "index.js",
+  "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mooeypoo/dom-word-replacer"
+  },
+  "scripts": {
+    "build": "babel src -d dist",
+    "pretest": "eslint --ignore-path .gitignore .",
+    "test": "nyc ./node_modules/.bin/mocha --require @babel/register",
+    "doc": "jsdoc -c .jsdoc.json",
+    "coverage": "nyc report --reporter=text-lcov | coveralls"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.10.5",
+    "@babel/core": "^7.10.5",
+    "@babel/node": "^7.10.5",
+    "@babel/preset-env": "^7.10.4",
+    "@babel/register": "^7.10.5",
+    "chai": "^4.2.0",
+    "coveralls": "^3.1.0",
+    "eslint": "^7.24.0",
+    "eslint-config-wikimedia": "^0.16.2",
+    "eslint-plugin-jsdoc": "^30.2.1",
+    "jsdoc": "^3.6.5",
+    "jsdoc-wmf-theme": "0.0.3",
+    "mocha": "^8.0.1",
+    "nyc": "^15.1.0",
+    "webpack": "^4.43.0",
+    "webpack-cli": "^3.3.12"
+  }
+}
