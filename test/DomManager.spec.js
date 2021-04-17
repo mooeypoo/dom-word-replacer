@@ -1,6 +1,6 @@
 import { expect } from 'chai';
-import DomWordReplacer from '../src/DomWordReplacer';
-import Dictionary from '../src/Dictionary';
+import DomWordReplacer from '../src/DomWordReplacer.js';
+import Dictionary from '../src/Dictionary.js';
 
 describe('DomWordReplacer test', () => {
   describe('HTML replacements', () => {

@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-import Dictionary from '../src/Dictionary';
+import Dictionary from '../src/Dictionary.js';
 
 describe('Dictionary test', () => {
   const definition = [
