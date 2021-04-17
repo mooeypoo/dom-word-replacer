@@ -18,6 +18,7 @@ class Dictionary {
   /**
    * Create a map of words and their replacements
    *
+   * @private
    * @param {Object[]} termArray An array of replacement terms
    */
   createMap(termArray) {
@@ -39,8 +40,6 @@ class Dictionary {
         });
       });
     });
-
-    console.log(this.terms);
   }
 
   /**
@@ -51,6 +50,7 @@ class Dictionary {
   getTermMap() {
     return this.terms;
   }
+
   /**
    * Get the dictionary name
    *
