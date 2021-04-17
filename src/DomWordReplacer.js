@@ -7,7 +7,7 @@ import Dictionary from './Dictionary';
 /**
  * Manage the DOM documnent
  *
- * @class DomManager
+ * @class DomWordReplacer
  */
 class DomWordReplacer {
   /**
@@ -58,7 +58,7 @@ class DomWordReplacer {
    */
   replace(htmlString, dictKeyFrom, dictKeyTo) {
     const doc = this.getDocumentFromHtml(htmlString);
-    console.log('DomManager replace', htmlString);
+    console.log('DomWordReplacer replace', htmlString);
     /**
      * Sanitize and escape dictionary terms to be used in
      * RegExp expressions.
