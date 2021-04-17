@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-import DomWordReplacer from '../src/DomWordReplacer.js';
+import DomManager from '../src/DomManager.js';
 import Dictionary from '../src/Dictionary.js';
 
 describe('DomWordReplacer test', () => {
@@ -36,7 +36,7 @@ describe('DomWordReplacer test', () => {
       }
     ];
     const dict = new Dictionary('test dictionary', definition);
-    const manager = new DomWordReplacer(dict);
+    const manager = new DomManager(dict);
     const testCases = [
       {
         msg: 'Single replacement in h1 tag',
