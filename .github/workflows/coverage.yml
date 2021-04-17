@@ -1,4 +1,4 @@
-name: build
+name: Coverage
 on:
   push:
     branches:
@@ -44,5 +44,5 @@ jobs:
       env:
         CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
       with:
-        coverageCommand: yarn run coverage
+        coverageCommand: npm run coverage
         debug: true
