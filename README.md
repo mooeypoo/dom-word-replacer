@@ -1,4 +1,4 @@
-![Java CI with Maven](https://github.com/mooeypoo/dom-word-replacer/workflows/Node.js%20CI/badge.svg) ![GitHub last commit](https://img.shields.io/github/last-commit/mooeypoo/dom-word-replacer)  [![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-v2.0%20adopted-ff69b4.svg)](code_of_conduct.md) [![Donate to the project!](https://img.shields.io/badge/Buy%20me%20a%20coffee!-Donate-ff69b4?style=flat)](https://ko-fi.com/mooeypoo)
+![Java CI with Maven](https://github.com/mooeypoo/dom-word-replacer/workflows/Node.js%20CI/badge.svg) ![GitHub last commit](https://img.shields.io/github/last-commit/mooeypoo/dom-word-replacer) [![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-v2.0%20adopted-ff69b4.svg)](code_of_conduct.md) [![Donate to the project!](https://img.shields.io/badge/Buy%20me%20a%20coffee!-Donate-ff69b4?style=flat)](https://ko-fi.com/mooeypoo)
 
 # DOM word replacer
 
