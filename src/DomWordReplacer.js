@@ -2,7 +2,7 @@ import xpath from 'xpath';
 import parse5 from 'parse5';
 import xmlserializer from 'xmlserializer';
 import xmldom from 'xmldom';
-import Dictionary from './Dictionary';
+import Dictionary from './Dictionary.js';
 
 /**
  * Manage the DOM documnent
