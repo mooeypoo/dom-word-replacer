@@ -22,6 +22,24 @@ class Dictionary {
    * @param {Object[]} termArray An array of replacement terms
    */
   createMap(termArray) {
+    /**
+     * Check whether the term is ambiguous for the key given.
+     *
+     * @param {string|string[]} ambiguousData Value of the
+     *  ambiguous key from the definition
+     * @param {string} key Dictionary key
+     * @return {boolean} Term is ambiguous for the key
+     */
+    const isAmbiguous = (ambiguousData, key) => {
+      if (!ambiguousData) {
+        return false;
+      }
+
+      // Normalize to an array
+      ambiguousData = Array.isArray(ambiguousData) ? ambiguousData : [ambiguousData];
+
+      return ambiguousData.indexOf(key) > -1;
+    };
     this.terms = {};
     termArray.forEach(data => {
       Object.keys(data.terms).forEach(key => {
@@ -34,7 +52,7 @@ class Dictionary {
 
           // Store in map
           this.terms[key][term] = {
-            ambiguous: !!data.ambiguous,
+            ambiguous: isAmbiguous(data.ambiguous, key),
             ...replaceOptions
           };
         });

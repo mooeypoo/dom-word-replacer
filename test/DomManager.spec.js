@@ -28,7 +28,7 @@ describe('DomWordReplacer test', () => {
       },
       {
         "category": "Category 4",
-        "ambiguous": true,
+        "ambiguous": "dict1",
         "terms": {
           "dict1": ["term4amb"],
           "dict2": ["flippedterm4ambopt1", "flippedterm4ambopt2"]
