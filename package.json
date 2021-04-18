@@ -5,7 +5,6 @@
   "license": "MIT",
   "description": "A javascript library that allows replacing words in DOM documents.",
   "main": "index.js",
-  "type": "module",
   "repository": {
     "type": "git",
     "url": "https://github.com/mooeypoo/dom-word-replacer"
