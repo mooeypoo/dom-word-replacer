@@ -18,6 +18,8 @@ class DomManager {
    * @param {boolean} [config.showOriginalTerm=true] Show the
    *  original term that was replaced in the title="" prop of
    *  the wrapper span.
+   * @param {boolean} [config.stripScriptTags=true] Automatically
+   *  strip and remove all <script> tags from the result
    * @param {string} [config.termClass="replaced-term"] The class
    *  name used for the wrapper of replaced terms.
    * @param {string} [config.ambiguousClass="ambiguous-term"] The
@@ -28,6 +30,7 @@ class DomManager {
     this.dictionary = dictionary;
 
     this.showOriginalTerm = config.showOriginalTerm === undefined ? true : config.showOriginalTerm;
+    this.stripScriptTags = config.stripScriptTags === undefined ? true : config.showOriginalTerm;
     this.termClass = config.termClass || 'replaced-term';
     this.ambiguousClass = config.ambiguousClass || 'ambiguous-term';
   }
@@ -44,7 +47,25 @@ class DomManager {
     const xhtml = xmlserializer.serializeToString(document);
     return new xmldom.DOMParser().parseFromString(xhtml);
   }
-  // sanitize(htmlString)
+
+  /**
+   * Strip script tags and sanitize the given html string.
+   *
+   * @param {string} htmlString HTML content
+   * @return {string} New html content
+   */
+  sanitize(htmlString) {
+    const doc = this.getDocumentFromHtml(htmlString);
+    const nodes = doc.getElementsByTagName('script');
+
+    for (let i = 0; i < nodes.length; i++) {
+      // Remove the node
+      nodes[i].parentNode.removeChild(nodes[i]);
+    }
+
+    // Return the html
+    return xmlserializer.serializeToString(doc);
+  }
 
   /**
    * Load html document and perform the replacements.
@@ -57,6 +78,9 @@ class DomManager {
    * @return {string} New html content
    */
   replace(htmlString, dictKeyFrom, dictKeyTo) {
+    if (this.stripScriptTags) {
+      htmlString = this.sanitize(htmlString);
+    }
     const doc = this.getDocumentFromHtml(htmlString);
     /**
      * Sanitize and escape dictionary terms to be used in

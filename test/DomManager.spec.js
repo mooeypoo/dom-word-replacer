@@ -2,6 +2,10 @@ import { expect } from 'chai';
 import DomManager from '../src/DomManager.js';
 import Dictionary from '../src/Dictionary.js';
 
+const wrapHtmlResult = str => {
+  return `<html xmlns="http://www.w3.org/1999/xhtml"><head/><body>${str}</body></html>`
+};
+
 describe('DomWordReplacer test', () => {
   describe('HTML replacements', () => {
     const definition = [
@@ -72,9 +76,6 @@ describe('DomWordReplacer test', () => {
         expected: '<div>The <span class="replaced-term" alt="term1">flippedterm1</span> is replaced but <img title="this term3 should not be replaced"/> and this <span class="replaced-term" alt="term3">flippedterm3</span> is replaced.</div>',
       }
     ];
-    const wrapHtmlResult = str => {
-      return `<html xmlns="http://www.w3.org/1999/xhtml"><head/><body>${str}</body></html>`
-    };
     testCases.forEach(t => {
       const result = manager.replace(t.input, 'dict1','dict2');
       it(t.msg, () => {
@@ -89,4 +90,18 @@ describe('DomWordReplacer test', () => {
     });
   });
 
+  describe('sanitize', () => {
+    const dict = new Dictionary('test dictionary', []);
+    const manager = new DomManager(dict);
+
+    it('Strips full <script> tags', () => {
+      const htmlString = `<script type="text/javascript">$.ready();</script><p>Do not strip this</p>`;
+      expect(manager.sanitize(htmlString)).to.equal(wrapHtmlResult('<p>Do not strip this</p>'));
+    });
+
+    it('Strips linked <script> tags', () => {
+      const htmlString = `<script src="http://fake.link/script.js"></script><p>Do not strip this</p>`;
+      expect(manager.sanitize(htmlString)).to.equal(wrapHtmlResult('<p>Do not strip this</p>'));
+    });
+  });
 });
