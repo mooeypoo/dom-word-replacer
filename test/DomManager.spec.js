@@ -6,7 +6,7 @@ const wrapHtmlResult = str => {
   return `<html xmlns="http://www.w3.org/1999/xhtml"><head/><body>${str}</body></html>`
 };
 
-describe('DomWordReplacer test', () => {
+describe('DomManager test', () => {
   describe('HTML replacements', () => {
     const definition = [
       {
@@ -45,35 +45,35 @@ describe('DomWordReplacer test', () => {
       {
         msg: 'Single replacement in h1 tag',
         input: '<h1>Title with term1!</h1>',
-        expected: '<h1>Title with <span class="replaced-term" alt="term1">flippedterm1</span>!</h1>'
+        expected: '<h1>Title with <span class="replaced-term" title="term1">flippedterm1</span>!</h1>'
       },
       {
         msg: 'Multiple replacements in the same tag',
         input: '<p>Text with term1 and term3 together</p>',
-        expected: '<p>Text with <span class="replaced-term" alt="term1">flippedterm1</span> and <span class="replaced-term" alt="term3">flippedterm3</span> together</p>'
+        expected: '<p>Text with <span class="replaced-term" title="term1">flippedterm1</span> and <span class="replaced-term" title="term3">flippedterm3</span> together</p>'
       },
       {
         msg: 'Multiple replacements in hierarchical tags',
         input: '<div>Text with term1 <p>and term3</p> inside</div>',
-        expected: '<div>Text with <span class="replaced-term" alt="term1">flippedterm1</span> <p>and <span class="replaced-term" alt="term3">flippedterm3</span></p> inside</div>',
+        expected: '<div>Text with <span class="replaced-term" title="term1">flippedterm1</span> <p>and <span class="replaced-term" title="term3">flippedterm3</span></p> inside</div>',
       },
       {
         msg: 'Ambiguous replacement with multiple replacement options',
         input: '<p>This term term4amb is ambiguous</p>',
         expected: [
-          '<p>This term <span class="replaced-term ambiguous-term" alt="term4amb">flippedterm4ambopt1</span> is ambiguous</p>',
-          '<p>This term <span class="replaced-term ambiguous-term" alt="term4amb">flippedterm4ambopt2</span> is ambiguous</p>'
+          '<p>This term <span class="replaced-term ambiguous-term" title="term4amb">flippedterm4ambopt1</span> is ambiguous</p>',
+          '<p>This term <span class="replaced-term ambiguous-term" title="term4amb">flippedterm4ambopt2</span> is ambiguous</p>'
         ]
       },
       {
         msg: 'Multiple matches, with already-existing replacement class',
         input: '<div><span class="replaced-term">Text with term1</span> <p>and term3</p></div>',
-        expected: '<div><span class="replaced-term">Text with term1</span> <p>and <span class="replaced-term" alt="term3">flippedterm3</span></p></div>'
+        expected: '<div><span class="replaced-term">Text with term1</span> <p>and <span class="replaced-term" title="term3">flippedterm3</span></p></div>'
       },
       {
         msg: 'Skipping replacements inside tag properties',
         input: '<div>The term1 is replaced but <img title="this term3 should not be replaced"/> and this term3 is replaced.</div>',
-        expected: '<div>The <span class="replaced-term" alt="term1">flippedterm1</span> is replaced but <img title="this term3 should not be replaced"/> and this <span class="replaced-term" alt="term3">flippedterm3</span> is replaced.</div>',
+        expected: '<div>The <span class="replaced-term" title="term1">flippedterm1</span> is replaced but <img title="this term3 should not be replaced"/> and this <span class="replaced-term" title="term3">flippedterm3</span> is replaced.</div>',
       }
     ];
     testCases.forEach(t => {

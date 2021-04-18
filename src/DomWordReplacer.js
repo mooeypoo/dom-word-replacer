@@ -15,7 +15,7 @@ class DomWordReplacer {
    */
   constructor(dictDefinition, config) {
     this.manager = new DomManager(
-      new Dictionary(dictDefinition.name, dictDefinition),
+      new Dictionary(dictDefinition.name, dictDefinition.terms),
       config
     );
   }

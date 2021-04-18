@@ -125,7 +125,7 @@ class DomManager {
           const props = [];
           const cssClasses = [this.termClass];
           if (this.showOriginalTerm) {
-            props.push(`alt="${match}"`);
+            props.push(`title="${match}"`);
           }
           if (replacementData.ambiguous) {
             cssClasses.push(this.ambiguousClass);
