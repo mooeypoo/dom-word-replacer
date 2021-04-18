@@ -15,17 +15,17 @@
     "pretest": "eslint --ignore-path .gitignore .",
     "test": "nyc ./node_modules/.bin/mocha --require @babel/register",
     "doc": "jsdoc -c .jsdoc.json",
-    "coverage": "nyc --reporter=lcov --reporter=text-lcov mocha"
+    "coverage": "nyc --reporter=lcov --reporter=text-lcov ./node_modules/.bin/mocha"
   },
   "nyc": {
     "all": true,
     "instrument": true,
     "extension": [".js"],
     "include": [
-      "!**/test/**/*",
-      "!**/test.*",
-      "dist/**/*",
       "src/**/*"
+    ],
+    "exclude": [
+      "**/*.spec.js"
     ]
   },
   "devDependencies": {
