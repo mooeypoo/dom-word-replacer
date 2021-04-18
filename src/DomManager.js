@@ -96,7 +96,7 @@ class DomManager {
     // Go over the entire dictionary
     this.dictionary.getAllTerms(dictKeyFrom).forEach(term => {
       // Create the lookup regular expression
-      const regex = new RegExp(escapeRegExp(term), 'ig');
+      const regex = new RegExp(`\\b${escapeRegExp(term)}\\b`, 'ig');
 
       // Look for relevant nodes that may have replacements
       xpath.select(
