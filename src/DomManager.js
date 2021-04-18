@@ -58,7 +58,6 @@ class DomManager {
    */
   replace(htmlString, dictKeyFrom, dictKeyTo) {
     const doc = this.getDocumentFromHtml(htmlString);
-    console.log('DomWordReplacer replace', htmlString);
     /**
      * Sanitize and escape dictionary terms to be used in
      * RegExp expressions.
@@ -97,7 +96,7 @@ class DomManager {
             // Sanity check
             return match;
           }
-          console.log('replacementData', replacementData);
+
           // Wrap with span and class (add ambiguous class if needed)
           const props = [];
           const cssClasses = [this.termClass];
