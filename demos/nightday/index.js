@@ -7,7 +7,7 @@ fs.readFile(__dirname + '/en.wikipedia.Night.html', 'utf8', function (err, html)
     console.log('Error reading file:', err);
     return;
   }
-
+  console.time('replacer');
   const replacer = new DomWordReplacer(dictDefinition, {
     css: `
     .replaced-term {
@@ -20,7 +20,7 @@ fs.readFile(__dirname + '/en.wikipedia.Night.html', 'utf8', function (err, html)
   `
   });
   let result = replacer.replace(html, 'night', 'day', 'https://en.wikipedia.org');
-
+  console.timeEnd('replacer');
   console.log('Outputting content.');
   fs.writeFile('../output/replaced.en.wikipedia.Night.html', result, err => {
     // In case of a error throw err.

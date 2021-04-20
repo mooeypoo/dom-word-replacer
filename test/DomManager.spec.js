@@ -68,8 +68,8 @@ describe('DomManager test', () => {
       },
       {
         msg: 'Multiple matches, with already-existing replacement class',
-        input: '<div><span class="replaced-term">Text with term1</span> <p>and term3</p></div>',
-        expected: '<div><span class="replaced-term">Text with term1</span> <p>and <span class="replaced-term" title="term3">flippedterm3</span></p></div>'
+        input: '<div><p class="replaced-term">Text with term1</p> <p>and term3</p></div>',
+        expected: '<div><p class="replaced-term">Text with term1</p> <p>and <span class="replaced-term" title="term3">flippedterm3</span></p></div>'
       },
       {
         msg: 'Skipping replacements inside tag properties',

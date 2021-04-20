@@ -1,5 +1,4 @@
 import domino from 'domino';
-import xpath from 'xpath';
 import serialize from 'w3c-xmlserializer';
 import Dictionary from './Dictionary.js';
 /**
@@ -157,59 +156,79 @@ class DomManager {
       return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
     };
 
-    // Go over the entire dictionary
-    this.dictionary.getAllTerms(dictKeyFrom).forEach(term => {
-      // Create the lookup regular expression
-      const regex = new RegExp(`\\b${escapeRegExp(term)}\\b`, 'ig');
+    const regex = new RegExp(
+      this.dictionary.getAllTerms(dictKeyFrom)
+        .map(v => {
+          return `\\b${escapeRegExp(v)}\\b`;
+        })
+        .join('|'),
+      'g'
+    );
 
-      // Look for relevant nodes that may have replacements
-      xpath.select(
-        `//text()[parent::*[not(contains(@class, '${this.termClass}'))]]`,
-        doc
-      ).forEach(node => {
-        if (
-          !node.textContent.match(regex) ||
-          node.textContent.match(regex).length === 0
-        ) {
-          // Skip if there was no match
-          return;
+    // Traverse the dom tree
+    // NodeFilter.SHOW_TEXT = 4
+    const tw = doc.createNodeIterator(doc.body, 4, null, false);
+    let node = tw.nextNode();
+    while (node) {
+      const matches = node.textContent.match(regex);
+      if (
+        !matches ||
+        !matches.length
+      ) {
+        // Skip if there was no match
+        node = tw.nextNode();
+        continue;
+      }
+
+      // Make sure the parent does not already have the classes
+      if (
+        (node.classList && node.classList.contains(this.termClass)) ||
+        (node.parentNode.classList && node.parentNode.classList.contains(this.termClass))
+      ) {
+        node = tw.nextNode();
+        continue;
+      }
+
+      // For all matches, perform the replacement
+      let newNodeContent = node.textContent;
+      matches.forEach(match => {
+        // Look it up in the dictionary
+        const replacementData = this.dictionary
+          .getSingleOption(dictKeyFrom, match, dictKeyTo);
+        if (!replacementData.term) {
+          // Sanity check
+          return match;
+        }
+        // Wrap with span and class (add ambiguous class if needed)
+        const props = [];
+        const cssClasses = [this.termClass];
+        if (this.showOriginalTerm) {
+          props.push(`title="${match}"`);
         }
 
-        // For all matches, perform the replacement
-        const newNodeText = node.textContent.replace(regex, match => {
-          // Look it up in the dictionary
-          const replacementData = this.dictionary
-            .getSingleOption(dictKeyFrom, match, dictKeyTo);
-          if (!replacementData.term) {
-            // Sanity check
-            return match;
-          }
-
-          // Wrap with span and class (add ambiguous class if needed)
-          const props = [];
-          const cssClasses = [this.termClass];
-          if (this.showOriginalTerm) {
-            props.push(`title="${match}"`);
-          }
-          if (replacementData.ambiguous) {
-            cssClasses.push(this.ambiguousClass);
-          }
-          return `<span class="${cssClasses.join(' ')}" ${props.join(' ')}>${replacementData.term}</span>`;
-        });
-
-        // Replace the current node with the new content
-        const nodeDoc = this.getDocumentFromHtml(`<div>${newNodeText}</div>`);
-        const newNode = nodeDoc.getElementsByTagName('div')[0];
-        for (let i = 0; i < newNode.childNodes.length; i++) {
-          const child = newNode.childNodes[i];
-          // Clone pieces into the old node
-          node.parentNode.insertBefore(doc.importNode(child, true), node);
+        if (replacementData.ambiguous) {
+          cssClasses.push(this.ambiguousClass);
         }
 
-        // Get rid of the old node
-        node.parentNode.removeChild(node);
+        // Replace in the newNodeContent
+        newNodeContent = newNodeContent.replace(
+          match,
+          `<span class="${cssClasses.join(' ')}" ${props.join(' ')}>${replacementData.term}</span>`);
       });
-    });
+
+      // Replace the current node with the new content
+      const nodeDoc = this.getDocumentFromHtml(`<div>${newNodeContent}</div>`);
+      const newNode = nodeDoc.getElementsByTagName('div')[0];
+      for (let i = 0; i < newNode.childNodes.length; i++) {
+        const child = newNode.childNodes[i];
+        // Clone pieces into the old node
+        node.parentNode.insertBefore(doc.importNode(child, true), node);
+      }
+
+      // Get rid of the old node
+      node.parentNode.removeChild(node);
+      node = tw.nextNode();
+    }
   }
 }
 
