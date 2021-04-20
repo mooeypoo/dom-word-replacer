@@ -10,11 +10,11 @@ fs.readFile(__dirname + '/en.wikipedia.Night.html', 'utf8', function (err, html)
 
   const replacer = new DomWordReplacer(dictDefinition, {
     css: `
-    .replacement-term {
+    .replaced-term {
       background-color: rgba(139, 195, 74, 0.5);
       padding: 0 0.2em;;
     }
-    .replacement-term.replacement-term-ambiguous {
+    .replaced-term.ambiguous-term {
       background-color: rgba(255, 193, 7, 0.5);
     }
   `

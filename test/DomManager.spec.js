@@ -75,6 +75,11 @@ describe('DomManager test', () => {
         msg: 'Skipping replacements inside tag properties',
         input: '<div>The term1 is replaced but <img title="this term3 should not be replaced" /> and this term3 is replaced.</div>',
         expected: '<div>The <span class="replaced-term" title="term1">flippedterm1</span> is replaced but <img title="this term3 should not be replaced" /> and this <span class="replaced-term" title="term3">flippedterm3</span> is replaced.</div>',
+      },
+      {
+        msg: 'Replacing single words inside h1 and h2 elements',
+        input: '<h1>term1</h1> and also <h2>term3</h2>',
+        expected: '<h1><span class="replaced-term" title="term1">flippedterm1</span></h1> and also <h2><span class="replaced-term" title="term3">flippedterm3</span></h2>'
       }
     ];
     testCases.forEach(t => {
