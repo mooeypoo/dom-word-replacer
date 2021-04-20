@@ -80,10 +80,17 @@ describe('DomManager test', () => {
         msg: 'Replacing single words inside h1 and h2 elements',
         input: '<h1>term1</h1> and also <h2>term3</h2>',
         expected: '<h1><span class="replaced-term" title="term1">flippedterm1</span></h1> and also <h2><span class="replaced-term" title="term3">flippedterm3</span></h2>'
+      },
+      {
+        both: true,
+        msg: 'Replacing both ways',
+        input: '<p>Replacing term1 but also flippedterm3</p>',
+        expected: '<p>Replacing <span class="replaced-term" title="term1">flippedterm1</span> but also <span class="replaced-term" title="flippedterm3">term3</span></p>'
       }
+
     ];
     testCases.forEach(t => {
-      const result = manager.replace(t.input, 'dict1','dict2');
+      const result = manager.replace(t.input, 'dict1','dict2', '', !!t.both);
       it(t.msg, () => {
         if (Array.isArray(t.expected)) {
           // In this case, we may have two options, so check if at least one (but no others) is correct
@@ -112,6 +119,25 @@ describe('DomManager test', () => {
       const doc = manager.getDocumentFromHtml(htmlString);
       manager.sanitize(doc);
       expect(serialize(doc)).to.equal(wrapHtmlResult('<p>Do not strip this</p>'));
+    });
+  });
+
+  describe('addBaseUrl', () => {
+    const dict = new Dictionary('test dictionary', []);
+    const manager = new DomManager(dict);
+
+    it('Adds a <base> tag where none existed', () => {
+      const doc = manager.getDocumentFromHtml('<p>test</p>');
+      manager.addBaseUrl(doc, 'http://example.com');
+      expect(serialize(doc)).to.equal('<html xmlns="http://www.w3.org/1999/xhtml"><head><base xmlns="http //www.w3.org/1999/xhtml" href="http://example.com" target="_blank"/></head><body><p>test</p></body></html>');
+    });
+
+    it.skip('Adds a <base> tag instead of an existing one', () => {
+      const str = '<html xmlns="http://www.w3.org/1999/xhtml"><head><base xmlns="http //www.w3.org/1999/xhtml" href="http://example.com" target="_blank"/></head><body><p>test</p></body></html>';
+      const doc = manager.getDocumentFromHtml('<html xmlns="http://www.w3.org/1999/xhtml"><head><base xmlns="http //www.w3.org/1999/xhtml" href="http://foobar.com" target="_blank"/></head><body><p>test</p></body></html>');
+      manager.addBaseUrl(doc, 'http://example.com');
+
+      expect(serialize(doc)).to.equal('<html xmlns="http://www.w3.org/1999/xhtml"><head><base xmlns="http //www.w3.org/1999/xhtml" href="http://example.com" target="_blank"/></head><body><p>test</p></body></html>');
     });
   });
 });

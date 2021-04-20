@@ -31,10 +31,13 @@ class DomWordReplacer {
    * @param {string} [baseUrl] A url representing the new
    *  <base> href for the given document. Ignore if not
    *  given.
+   * @param {boolean} [replaceBothWays] If set to true, the
+   *  replacement will happen twice -- once for the keyFrom,
+   *  and once for the keyTo, producing a two-way translation.
    * @return {string} New html content
    */
-  replace(htmlString, dictKeyFrom, dictKeyTo, baseUrl = '') {
-    return this.manager.replace(htmlString, dictKeyFrom, dictKeyTo, baseUrl);
+  replace(htmlString, dictKeyFrom, dictKeyTo, baseUrl = '', replaceBothWays = false) {
+    return this.manager.replace(htmlString, dictKeyFrom, dictKeyTo, baseUrl, replaceBothWays);
   }
 }
 

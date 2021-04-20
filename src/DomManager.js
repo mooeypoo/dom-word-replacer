@@ -45,9 +45,6 @@ class DomManager {
    * @return {domino} DOM document
    */
   getDocumentFromHtml(htmlString) {
-    // const document = parse5.parse(htmlString);
-    // const xhtml = xmlserializer.serializeToString(document);
-    // return new xmldom.DOMParser().parseFromString(xhtml);
     return domino.createDocument(htmlString, true);
   }
 
@@ -108,21 +105,12 @@ class DomManager {
    * @param {string} [baseUrl] A url representing the new
    *  <base> href for the given document. Ignore if not
    *  given.
+   * @param {boolean} [replaceBothWays] If set to true, the
+   *  replacement will happen twice -- once for the keyFrom,
+   *  and once for the keyTo, producing a two-way translation.
    * @return {string} New html content
    */
-  replace(htmlString, dictKeyFrom, dictKeyTo, baseUrl = '') {
-    /**
-     * Sanitize and escape dictionary terms to be used in
-     * RegExp expressions.
-     *
-     * @see https://stackoverflow.com/questions/3446170/escape-string-for-use-in-javascript-regex
-     * @param {string} str RegExp string from the dictionary
-     * @return {string} Sanitized string
-     */
-    const escapeRegExp = str => {
-      return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-    };
-
+  replace(htmlString, dictKeyFrom, dictKeyTo, baseUrl = '', replaceBothWays = false) {
     const doc = this.getDocumentFromHtml(htmlString);
     if (this.stripScriptTags) {
       this.sanitize(doc);
@@ -135,6 +123,39 @@ class DomManager {
     if (baseUrl) {
       this.addBaseUrl(doc, baseUrl);
     }
+
+    this.performReplacementForDictionaryKey(doc, dictKeyFrom, dictKeyTo);
+
+    if (replaceBothWays) {
+      // Replace the other way too
+      this.performReplacementForDictionaryKey(doc, dictKeyTo, dictKeyFrom);
+    }
+
+    // Return the html
+    return serialize(doc);
+  }
+
+  /**
+   * Perform the actual replacements in the document, based on given keys
+   *
+   * @param {Document} doc Document to perform replacements on
+   * @param {string} dictKeyFrom The dictionary key used
+   *  to look for matches
+   * @param {string} dictKeyTo The dictionary key used
+   *  to look for replacements
+   */
+  performReplacementForDictionaryKey(doc, dictKeyFrom, dictKeyTo) {
+    /**
+     * Sanitize and escape dictionary terms to be used in
+     * RegExp expressions.
+     *
+     * @see https://stackoverflow.com/questions/3446170/escape-string-for-use-in-javascript-regex
+     * @param {string} str RegExp string from the dictionary
+     * @return {string} Sanitized string
+     */
+    const escapeRegExp = str => {
+      return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    };
 
     // Go over the entire dictionary
     this.dictionary.getAllTerms(dictKeyFrom).forEach(term => {
@@ -189,10 +210,6 @@ class DomManager {
         node.parentNode.removeChild(node);
       });
     });
-
-    // Return the html
-    // return xmlserializer.serializeToString(doc);
-    return serialize(doc);
   }
 }
 
