@@ -1,6 +1,6 @@
 const fs = require('fs');
 const dictDefinition = require('./nightday.json');
-const DomWordReplacer = require('../../dist/DomWordReplacer').default;
+const DomWordReplacer = require('../../index.js');
 
 fs.readFile(__dirname + '/en.wikipedia.Night.html', 'utf8', function (err, html) {
   if (err) {
