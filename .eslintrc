@@ -16,7 +16,8 @@
 		"jsdoc"
 	],
 	"ignorePatterns": [
-		"test/*",
+    "test/*",
+    "demos/*",
 		"node_modules/*",
 		"docs/*"
 	],

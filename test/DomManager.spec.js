@@ -1,9 +1,10 @@
 import { expect } from 'chai';
 import DomManager from '../src/DomManager.js';
 import Dictionary from '../src/Dictionary.js';
+import serialize from 'w3c-xmlserializer';
 
 const wrapHtmlResult = str => {
-  return `<html xmlns="http://www.w3.org/1999/xhtml"><head/><body>${str}</body></html>`
+  return `<html xmlns="http://www.w3.org/1999/xhtml"><head></head><body>${str}</body></html>`
 };
 
 describe('DomManager test', () => {
@@ -72,8 +73,8 @@ describe('DomManager test', () => {
       },
       {
         msg: 'Skipping replacements inside tag properties',
-        input: '<div>The term1 is replaced but <img title="this term3 should not be replaced"/> and this term3 is replaced.</div>',
-        expected: '<div>The <span class="replaced-term" title="term1">flippedterm1</span> is replaced but <img title="this term3 should not be replaced"/> and this <span class="replaced-term" title="term3">flippedterm3</span> is replaced.</div>',
+        input: '<div>The term1 is replaced but <img title="this term3 should not be replaced" /> and this term3 is replaced.</div>',
+        expected: '<div>The <span class="replaced-term" title="term1">flippedterm1</span> is replaced but <img title="this term3 should not be replaced" /> and this <span class="replaced-term" title="term3">flippedterm3</span> is replaced.</div>',
       }
     ];
     testCases.forEach(t => {
@@ -93,15 +94,19 @@ describe('DomManager test', () => {
   describe('sanitize', () => {
     const dict = new Dictionary('test dictionary', []);
     const manager = new DomManager(dict);
-
+    
     it('Strips full <script> tags', () => {
       const htmlString = `<script type="text/javascript">$.ready();</script><p>Do not strip this</p>`;
-      expect(manager.sanitize(htmlString)).to.equal(wrapHtmlResult('<p>Do not strip this</p>'));
+      const doc = manager.getDocumentFromHtml(htmlString);
+      manager.sanitize(doc);
+      expect(serialize(doc)).to.equal(wrapHtmlResult('<p>Do not strip this</p>'));
     });
 
     it('Strips linked <script> tags', () => {
       const htmlString = `<script src="http://fake.link/script.js"></script><p>Do not strip this</p>`;
-      expect(manager.sanitize(htmlString)).to.equal(wrapHtmlResult('<p>Do not strip this</p>'));
+      const doc = manager.getDocumentFromHtml(htmlString);
+      manager.sanitize(doc);
+      expect(serialize(doc)).to.equal(wrapHtmlResult('<p>Do not strip this</p>'));
     });
   });
 });

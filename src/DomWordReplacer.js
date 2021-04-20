@@ -28,10 +28,13 @@ class DomWordReplacer {
    *  to look for matches
    * @param {string} dictKeyTo The dictionary key used
    *  to look for replacements
+   * @param {string} [baseUrl] A url representing the new
+   *  <base> href for the given document. Ignore if not
+   *  given.
    * @return {string} New html content
    */
-  replace(htmlString, dictKeyFrom, dictKeyTo) {
-    return this.manager.replace(htmlString, dictKeyFrom, dictKeyTo);
+  replace(htmlString, dictKeyFrom, dictKeyTo, baseUrl = '') {
+    return this.manager.replace(htmlString, dictKeyFrom, dictKeyTo, baseUrl);
   }
 }
 

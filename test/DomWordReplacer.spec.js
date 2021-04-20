@@ -2,7 +2,7 @@ import { expect } from 'chai';
 import DomWordReplacer from '../src/DomWordReplacer.js';
 
 const wrapHtmlResult = str => {
-  return `<html xmlns="http://www.w3.org/1999/xhtml"><head/><body>${str}</body></html>`
+  return `<html xmlns="http://www.w3.org/1999/xhtml"><head></head><body>${str}</body></html>`
 };
 
 describe('DomWordReplacer test', () => {

@@ -1,0 +1,40 @@
+{
+  "name": "Day and Night",
+  "terms": [
+    {
+      "category": "Single",
+      "terms": {
+        "night": ["night"],
+        "day": ["day"]
+      }
+    },
+    {
+      "category": "Multiple",
+      "terms": {
+        "night": ["nights"],
+        "day": ["days"]
+      }
+    },
+    {
+      "category": "Time",
+      "terms": {
+        "night": ["nighttime"],
+        "day": ["daytime"]
+      }
+    },
+    {
+      "category": "Sun",
+      "terms": {
+        "night": ["sunset"],
+        "day": ["sunrise"]
+      }
+    },
+    {
+      "category": "Sleep",
+      "terms": {
+        "night": ["sleep"],
+        "day": ["wake"]
+      }
+    }
+  ]
+}

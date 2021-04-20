@@ -1,9 +1,7 @@
+import domino from 'domino';
 import xpath from 'xpath';
-import parse5 from 'parse5';
-import xmlserializer from 'xmlserializer';
-import xmldom from 'xmldom';
+import serialize from 'w3c-xmlserializer';
 import Dictionary from './Dictionary.js';
-
 /**
  * Manage the DOM documnent
  *
@@ -20,6 +18,9 @@ class DomManager {
    *  the wrapper span.
    * @param {boolean} [config.stripScriptTags=true] Automatically
    *  strip and remove all <script> tags from the result
+   * @param {string} [config.css] A css string to inject to the page.
+   *  This is used mostly to style the replacement term classes
+   *  on the outputted html.
    * @param {string} [config.termClass="replaced-term"] The class
    *  name used for the wrapper of replaced terms.
    * @param {string} [config.ambiguousClass="ambiguous-term"] The
@@ -33,6 +34,7 @@ class DomManager {
     this.stripScriptTags = config.stripScriptTags === undefined ? true : config.showOriginalTerm;
     this.termClass = config.termClass || 'replaced-term';
     this.ambiguousClass = config.ambiguousClass || 'ambiguous-term';
+    this.css = config.css;
   }
 
   /**
@@ -40,31 +42,59 @@ class DomManager {
    *
    * @private
    * @param {string} htmlString
-   * @return {xmldom} DOM document
+   * @return {domino} DOM document
    */
   getDocumentFromHtml(htmlString) {
-    const document = parse5.parse(htmlString);
-    const xhtml = xmlserializer.serializeToString(document);
-    return new xmldom.DOMParser().parseFromString(xhtml);
+    // const document = parse5.parse(htmlString);
+    // const xhtml = xmlserializer.serializeToString(document);
+    // return new xmldom.DOMParser().parseFromString(xhtml);
+    return domino.createDocument(htmlString, true);
   }
 
   /**
    * Strip script tags and sanitize the given html string.
    *
-   * @param {string} htmlString HTML content
-   * @return {string} New html content
+   * @param {Document} doc to strip scripts from
    */
-  sanitize(htmlString) {
-    const doc = this.getDocumentFromHtml(htmlString);
+  sanitize(doc) {
     const nodes = doc.getElementsByTagName('script');
-
     for (let i = 0; i < nodes.length; i++) {
       // Remove the node
       nodes[i].parentNode.removeChild(nodes[i]);
     }
+  }
 
-    // Return the html
-    return xmlserializer.serializeToString(doc);
+  /**
+   * Inject a CSS string into the DOM as a <style> tag.
+   *
+   * @param {Document} doc Document to inject into
+   */
+  injectCss(doc) {
+    const headNode = doc.getElementsByTagName('head')[0];
+    const cssNode = doc.createElementNS('http //www.w3.org/1999/xhtml', 'style');
+    cssNode.appendChild(doc.createTextNode(this.css));
+    headNode.insertBefore(cssNode, headNode.firstChild);
+  }
+
+  /**
+   * Add a base url rule through <base> node
+   *
+   * @param {Document} doc Document to add the tag to
+   * @param {string} baseUrl A url representing the base url
+   *  for the outputted doc.
+   */
+  addBaseUrl(doc, baseUrl) {
+    const headNode = doc.getElementsByTagName('head')[0];
+    const baseNode = doc.createElementNS('http //www.w3.org/1999/xhtml', 'base');
+    baseNode.setAttribute('href', baseUrl);
+    baseNode.setAttribute('target', '_blank');
+    const existingBaseElement = doc.getElementsByTagName('base');
+    if (existingBaseElement.length) {
+      doc.parentElement.insertBefore(baseNode, existingBaseElement);
+      doc.parentElement.removeChild(existingBaseElement);
+    } else {
+      headNode.insertBefore(baseNode, headNode.firstChild);
+    }
   }
 
   /**
@@ -75,13 +105,12 @@ class DomManager {
    *  to look for matches
    * @param {string} dictKeyTo The dictionary key used
    *  to look for replacements
+   * @param {string} [baseUrl] A url representing the new
+   *  <base> href for the given document. Ignore if not
+   *  given.
    * @return {string} New html content
    */
-  replace(htmlString, dictKeyFrom, dictKeyTo) {
-    if (this.stripScriptTags) {
-      htmlString = this.sanitize(htmlString);
-    }
-    const doc = this.getDocumentFromHtml(htmlString);
+  replace(htmlString, dictKeyFrom, dictKeyTo, baseUrl = '') {
     /**
      * Sanitize and escape dictionary terms to be used in
      * RegExp expressions.
@@ -93,6 +122,20 @@ class DomManager {
     const escapeRegExp = str => {
       return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
     };
+
+    const doc = this.getDocumentFromHtml(htmlString);
+    if (this.stripScriptTags) {
+      this.sanitize(doc);
+    }
+
+    if (this.css) {
+      this.injectCss(doc);
+    }
+
+    if (baseUrl) {
+      this.addBaseUrl(doc, baseUrl);
+    }
+
     // Go over the entire dictionary
     this.dictionary.getAllTerms(dictKeyFrom).forEach(term => {
       // Create the lookup regular expression
@@ -148,7 +191,8 @@ class DomManager {
     });
 
     // Return the html
-    return xmlserializer.serializeToString(doc);
+    // return xmlserializer.serializeToString(doc);
+    return serialize(doc);
   }
 }
 

@@ -13,7 +13,12 @@ npm install --save @mooeypoo/dom-word-replacer
 ```
 
 1. Instantiate the `DomWordReplacer` object with a replacement dictionary and your desired configuration. See below for configuration options.
-2. Call `DomWordReplacer.replace` with your HTML and desired dictionary keys to get a replaced HTML.
+2. Call `DomWordReplacer.replace` with your HTML, desired dictionary keys, and optional base-url to get a replaced HTML.
+
+```
+const rep = new DomWordReplacer(dictionaryDefinition);
+const result = rep.replace(htmlString, 'dict1', 'dict2', 'http://sample.com');
+```
 
 # Dictionary definition
 
@@ -119,6 +124,11 @@ There are several configuration options available for the replacer.
 The replacer wraps each replacement with a `<span>` that has an associated class to it. The default class is `replaced-term`. This class name can be changed using the config property `termClass`.
 
 If terms are defined as ambiguous in the dictionary definition, another class is attached to the wrapper span. By default, that class is `ambiguous-term`. This class name can be changed using the config property `ambiguousClass`.
+
+### Inject CSS
+
+You can make sure there's some css injected into the document to style the `replaced-term` and `ambiguous-term` classes, by passing a string to the `css` config option. If the string exists,
+it will be injected (after replacement) into the new document, in a `<style>` tag.
 
 ### Showing original term
 
