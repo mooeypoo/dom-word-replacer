@@ -15,6 +15,10 @@ class DomManager {
    * @param {boolean} [config.showOriginalTerm=true] Show the
    *  original term that was replaced in the title="" prop of
    *  the wrapper span.
+   * @param {boolean} [config.showDictionaryKeys] Show the dictionary
+   *  key used for the replacement. If set to true, data-replaced-from=
+   *  and data-replaced-to will be added as data props to every
+   *  replacement wrapper.
    * @param {boolean} [config.stripScriptTags=true] Automatically
    *  strip and remove all <script> tags from the result
    * @param {string} [config.css] A css string to inject to the page.
@@ -30,6 +34,7 @@ class DomManager {
     this.dictionary = dictionary;
 
     this.showOriginalTerm = config.showOriginalTerm === undefined ? true : config.showOriginalTerm;
+    this.showDictionaryKeys = !!config.showDictionaryKeys;
     this.stripScriptTags = config.stripScriptTags === undefined ? true : config.showOriginalTerm;
     this.termClass = config.termClass || 'replaced-term';
     this.ambiguousClass = config.ambiguousClass || 'ambiguous-term';
@@ -190,7 +195,6 @@ class DomManager {
       }
 
       // For all matches, perform the replacement
-      // let newNodeContent = node.textContent;
       const newNodeContent = node.textContent.replace(regex, match => {
         // Look it up in the dictionary
         const replacementData = this.dictionary
@@ -204,6 +208,11 @@ class DomManager {
         const cssClasses = [this.termClass];
         if (this.showOriginalTerm) {
           props.push(`title="${match}"`);
+        }
+        if (this.showDictionaryKeys) {
+          // Add data- props
+          props.push(`data-replaced-from="${dictKeyFrom}"`);
+          props.push(`data-replaced-to="${dictKeyTo}"`);
         }
 
         if (replacementData.ambiguous) {
