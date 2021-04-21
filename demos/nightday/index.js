@@ -19,7 +19,7 @@ fs.readFile(__dirname + '/en.wikipedia.Night.html', 'utf8', function (err, html)
     }
   `
   });
-  let result = replacer.replace(html, 'night', 'day', 'https://en.wikipedia.org');
+  let result = replacer.replace(html, 'night', 'day', 'https://en.wikipedia.org', true);
   console.timeEnd('replacer');
   console.log('Outputting content.');
   fs.writeFile('../output/replaced.en.wikipedia.Night.html', result, err => {

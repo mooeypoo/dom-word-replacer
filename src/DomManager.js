@@ -190,8 +190,8 @@ class DomManager {
       }
 
       // For all matches, perform the replacement
-      let newNodeContent = node.textContent;
-      matches.forEach(match => {
+      // let newNodeContent = node.textContent;
+      const newNodeContent = node.textContent.replace(regex, match => {
         // Look it up in the dictionary
         const replacementData = this.dictionary
           .getSingleOption(dictKeyFrom, match, dictKeyTo);
@@ -210,10 +210,7 @@ class DomManager {
           cssClasses.push(this.ambiguousClass);
         }
 
-        // Replace in the newNodeContent
-        newNodeContent = newNodeContent.replace(
-          match,
-          `<span class="${cssClasses.join(' ')}" ${props.join(' ')}>${replacementData.term}</span>`);
+        return `<span class="${cssClasses.join(' ')}" ${props.join(' ')}>${replacementData.term}</span>`;
       });
 
       // Replace the current node with the new content
