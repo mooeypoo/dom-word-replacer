@@ -1,6 +1,7 @@
 import domino from 'domino';
 import serialize from 'w3c-xmlserializer';
 import Dictionary from './Dictionary.js';
+import Utils from './Utils.js';
 /**
  * Manage the DOM documnent
  *
@@ -152,22 +153,10 @@ class DomManager {
    *  to look for replacements
    */
   performReplacementForDictionaryKey(doc, dictKeyFrom, dictKeyTo) {
-    /**
-     * Sanitize and escape dictionary terms to be used in
-     * RegExp expressions.
-     *
-     * @see https://stackoverflow.com/questions/3446170/escape-string-for-use-in-javascript-regex
-     * @param {string} str RegExp string from the dictionary
-     * @return {string} Sanitized string
-     */
-    const escapeRegExp = str => {
-      return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-    };
-
     const regex = new RegExp(
       this.dictionary.getAllTerms(dictKeyFrom)
         .map(v => {
-          return `\\b${escapeRegExp(v)}\\b`;
+          return `\\b${Utils.escapeRegExp(v)}\\b`;
         })
         .join('|'),
       'gi'
@@ -179,10 +168,7 @@ class DomManager {
     let node = tw.nextNode();
     while (node) {
       const matches = node.textContent.match(regex);
-      if (
-        !matches ||
-        !matches.length
-      ) {
+      if (!matches || !matches.length) {
         // Skip if there was no match
         node = tw.nextNode();
         continue;
@@ -206,6 +192,7 @@ class DomManager {
           // Sanity check
           return match;
         }
+
         // Wrap with span and class (add ambiguous class if needed)
         const props = [];
         const cssClasses = [this.termClass];

@@ -1,3 +1,5 @@
+import Utils from './Utils';
+
 /**
  * Retain a dictionary of word pairs to be replaced
  *
@@ -131,8 +133,7 @@ class Dictionary {
 
     return {
       ambiguous: !!data.ambiguous,
-      term: data && data[targetKey] &&
-        data[targetKey][Math.floor(Math.random() * data[targetKey].length)]
+      term: data && data[targetKey] && Utils.getRandomArrValue(data[targetKey])
     };
   }
 }
