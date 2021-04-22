@@ -1,6 +1,8 @@
-node_modules/
-.nyc_output/
-coverage/
-dist/*
-docs/*
-demos/output/*
+.nyc_output
+coverage
+dist
+docs/dist
+demos/output
+node_modules
+npm-debug.log
+yarn.lock

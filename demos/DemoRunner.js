@@ -1,5 +1,5 @@
 const fs = require('fs');
-const DomWordReplacer = require('../index.js');
+const DomWordReplacer = require('../dist');
 
 class DemoRunner {
   constructor(name, directory, keys, replacerOptions) {

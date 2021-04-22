@@ -9,47 +9,59 @@
     "type": "git",
     "url": "https://github.com/mooeypoo/dom-word-replacer"
   },
-  "scripts": {
-    "demo": "node demos/run.js",
-    "build": "babel src -d dist",
-    "pretest": "eslint --ignore-path .gitignore .",
-    "test": "nyc ./node_modules/.bin/mocha --require @babel/register",
-    "doc": "jsdoc -c .jsdoc.json",
-    "coverage": "nyc --reporter=lcov --reporter=text-lcov ./node_modules/.bin/mocha"
-  },
-  "nyc": {
-    "all": true,
-    "instrument": true,
-    "extension": [
-      ".js"
+  "keywords": [],
+  "jsnext:main": "index.es.js",
+  "babel": {
+    "presets": [
+      "@babel/preset-env"
     ],
-    "include": [
-      "src/**/*"
-    ],
-    "exclude": [
-      "**/*.spec.js"
+    "plugins": [
+      "@babel/plugin-transform-runtime"
     ]
   },
-  "devDependencies": {
-    "@babel/cli": "^7.10.5",
-    "@babel/core": "^7.10.5",
-    "@babel/node": "^7.10.5",
-    "@babel/preset-env": "^7.10.4",
-    "@babel/register": "^7.10.5",
-    "chai": "^4.2.0",
-    "eslint": "^7.24.0",
-    "eslint-config-wikimedia": "^0.16.2",
-    "eslint-plugin-jsdoc": "^30.2.1",
-    "jsdoc": "^3.6.5",
-    "jsdoc-wmf-theme": "0.0.3",
-    "mocha": "^8.0.1",
-    "nyc": "^15.1.0",
-    "webpack": "^4.43.0",
-    "webpack-cli": "^3.3.12"
+  "eslintConfig": {
+    "parser": "babel-eslint",
+    "extends": "airbnb-base"
+  },
+  "scripts": {
+    "demo": "node demos/run.js",
+    "lint": "eslint src test tools",
+    "test": "mocha --require @babel/register",
+    "test:watch": "mocha --require @babel/register --reporter min --watch",
+    "test:cover": "nyc npm test",
+    "coveralls": "cat ./coverage/lcov.info | coveralls",
+    "build": "node tools/build",
+    "prepublish": "npm run build",
+    "publish:docs": "easystatic deploy docs --repo mooeypoo/dom-word-replacer",
+    "start": "easystatic start docs"
   },
   "dependencies": {
+    "@babel/runtime": "^7.0.0",
     "domino": "^2.1.6",
-    "jsdom": "^16.5.3",
-    "xpath": "0.0.32"
+    "jsdom": "^16.5.3"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.0.0",
+    "@babel/core": "^7.0.0",
+    "@babel/node": "^7.0.0",
+    "@babel/plugin-transform-runtime": "^7.0.0",
+    "@babel/preset-env": "^7.0.0",
+    "@babel/register": "^7.0.0",
+    "babel-eslint": "^10.0.1",
+    "chai": "^4.2.0",
+    "coveralls": "^2.11.14",
+    "del": "^2.2.2",
+    "easystatic": "^0.1.12",
+    "eslint": "^5.9.0",
+    "eslint-config-airbnb-base": "^13.1.0",
+    "eslint-plugin-import": "^2.2.0",
+    "istanbul": "^1.1.0-alpha.1",
+    "mocha": "^5.2.0",
+    "nyc": "^13.1.0",
+    "rollup": "^0.67.3",
+    "rollup-plugin-babel": "^4.0.3",
+    "rollup-plugin-commonjs": "^9.2.0",
+    "rollup-plugin-node-resolve": "^3.4.0",
+    "sinon": "^7.1.1"
   }
 }

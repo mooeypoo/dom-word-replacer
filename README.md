@@ -1,5 +1,3 @@
-![Java CI with Maven](https://github.com/mooeypoo/dom-word-replacer/workflows/Node.js%20CI/badge.svg) ![GitHub last commit](https://img.shields.io/github/last-commit/mooeypoo/dom-word-replacer) [![Maintainability](https://api.codeclimate.com/v1/badges/81b1c5c9f6fde4d37bff/maintainability)](https://codeclimate.com/github/mooeypoo/dom-word-replacer/maintainability) [![Test Coverage](https://api.codeclimate.com/v1/badges/81b1c5c9f6fde4d37bff/test_coverage)](https://codeclimate.com/github/mooeypoo/dom-word-replacer/test_coverage) [![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-v2.0%20adopted-ff69b4.svg)](code_of_conduct.md) [![Donate to the project!](https://img.shields.io/badge/Buy%20me%20a%20coffee!-Donate-ff69b4?style=flat)](https://ko-fi.com/mooeypoo)
-
 # DOM word replacer
 
 A package used to perform word replacements in HTML documents.
@@ -12,12 +10,12 @@ To use this package, install it in your project:
 npm install --save @mooeypoo/dom-word-replacer
 ```
 
-1. Instantiate the `DomWordReplacer` object with a replacement dictionary and your desired configuration. See below for configuration options.
+1. Instantiate the `DomWordReplacer(dictionaryDefinition, configOptions)` object with a replacement dictionary and your desired configuration. See below for configuration options.
 2. Call `DomWordReplacer.replace` with your HTML, desired dictionary keys, and optional base-url to get a replaced HTML.
 
 ```
 const rep = new DomWordReplacer(dictionaryDefinition);
-const result = rep.replace(htmlString, 'dict1', 'dict2', 'http://sample.com');
+const result = rep.replace(htmlString, 'dict1', 'dict2', 'http://sample.com', false);
 ```
 
 # Dictionary definition
@@ -136,40 +134,15 @@ By default, the wrapper span of every replacement will include the original word
 
 ### Configuration example
 
-```json
+```js
 {
   showOriginalTerm: false,
   termClass: 'css-class-for-replaced-terms',
   ambiguousClass: 'css-class-for-ambiguous-terms'
 }
 ```
-# Contribute & Development
 
-Pull requests are welcome!
+# Credits
 
-To run the development version of the package locally:
-
-1. Clone the repo
-2. Run `npm install`
-
-To run tests
-
-```
-npm run test
-```
-To generate documentation:
-
-```
-npm run doc
-```
-
-To build:
-
-```
-npm run build
-```
-
-# Author and contribution
-
-* Created by Moriel Schottlender 2021
-* Pull requests welcome!
+* Made with :coffee: by Moriel Schottlender ([@mooeypoo](https://twitter.com/mooeypoo))
+* Bundling and docs based on [Babel Starter Kit](https://github.com/kriasoft/babel-starter-kit)

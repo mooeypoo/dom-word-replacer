@@ -1,4 +1,5 @@
-node_modules/
-.nyc_output/
-coverage/
-docs/*
+.nyc_output
+coverage
+docs/dist
+node_modules
+npm-debug.log
