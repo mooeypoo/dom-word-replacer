@@ -24,7 +24,7 @@
     "lint": "eslint src",
     "test": "mocha --require @babel/register",
     "test:watch": "mocha --require @babel/register --reporter min --watch",
-    "test:cover": "nyc npm test",
+    "test:cover": "nyc --reporter=lcov --reporter=text-lcov npm test",
     "coveralls": "cat ./coverage/lcov.info | coveralls",
     "build": "node tools/build",
     "prepublish": "npm run build",
