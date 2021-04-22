@@ -1,0 +1,59 @@
+{
+	"extends": [
+		"wikimedia/server"
+	],
+  "parser": "babel-eslint",
+	"globals": {
+		"SpreadsheetApp": "readonly",
+		"ContentService": "readonly"
+	},
+	"parserOptions": {
+		"sourceType": "module"
+	},
+	"plugins": [
+		"jsdoc"
+	],
+	"ignorePatterns": [
+    "test/*",
+    "demos/*",
+		"node_modules/*",
+		"docs/*"
+	],
+	"rules": {
+    "indent": ["error", 2],
+		"camelcase": [
+			"error",
+			{
+				"properties": "never"
+			}
+		],
+		"space-in-parens": [
+			"off"
+		],
+		"array-bracket-spacing": [
+			2,
+			"never"
+		],
+		"computed-property-spacing": [
+			2,
+			"never"
+		],
+		"arrow-parens": [
+			"error",
+			"as-needed"
+		],
+		"jsdoc/check-alignment": 1,
+		"jsdoc/require-jsdoc": [
+			"error",
+			{
+				"require": {
+					"FunctionDeclaration": true,
+					"MethodDefinition": true,
+					"ClassDeclaration": true,
+					"ArrowFunctionExpression": true,
+					"FunctionExpression": true
+				}
+			}
+		]
+	}
+}

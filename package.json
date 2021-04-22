@@ -19,13 +19,9 @@
       "@babel/plugin-transform-runtime"
     ]
   },
-  "eslintConfig": {
-    "parser": "babel-eslint",
-    "extends": "airbnb-base"
-  },
   "scripts": {
     "demo": "node demos/run.js",
-    "lint": "eslint src test tools",
+    "lint": "eslint src",
     "test": "mocha --require @babel/register",
     "test:watch": "mocha --require @babel/register --reporter min --watch",
     "test:cover": "nyc npm test",
@@ -52,9 +48,10 @@
     "coveralls": "^2.11.14",
     "del": "^2.2.2",
     "easystatic": "^0.1.12",
-    "eslint": "^5.9.0",
-    "eslint-config-airbnb-base": "^13.1.0",
+    "eslint": "^7.24.0",
+    "eslint-config-wikimedia": "^0.16.2",
     "eslint-plugin-import": "^2.2.0",
+    "eslint-plugin-jsdoc": "^32.3.0",
     "istanbul": "^1.1.0-alpha.1",
     "mocha": "^5.2.0",
     "nyc": "^13.1.0",
