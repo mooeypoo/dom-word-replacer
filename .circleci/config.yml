@@ -5,23 +5,15 @@ jobs:
       - image: circleci/node:14
     steps:
       - checkout
-
       - run:
           name: Install NPM
           command: npm install
-
       - run:
-        name: Test
-        command: |
-          npm run lint
-
+          name: Test
+          command: npm run lint
       - run:
-        name: Test
-        command: |
-          npm run test:cover
-
-
+          name: Test
+          command: npm run test:cover
       - run:
-        name: Test
-        command: |
-          npm run coveralls
+          name: Test
+          command: npm run coveralls
