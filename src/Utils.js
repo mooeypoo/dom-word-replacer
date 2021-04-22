@@ -10,7 +10,7 @@ class Utils {
    * @param {string} str RegExp string from the dictionary
    * @return {string} Sanitized string
    */
-  static escapeRegExp (str) {
+  static escapeRegExp(str) {
     return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
   }
 
