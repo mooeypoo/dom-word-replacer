@@ -170,7 +170,7 @@ class DomManager {
           return `\\b${escapeRegExp(v)}\\b`;
         })
         .join('|'),
-      'ig'
+      'gi'
     );
 
     // Traverse the dom tree

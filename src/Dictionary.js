@@ -43,6 +43,7 @@ class Dictionary {
     this.terms = {};
     termArray.forEach(data => {
       Object.keys(data.terms).forEach(key => {
+        key = key.toLowerCase();
         this.terms[key] = this.terms[key] || {};
 
         data.terms[key].forEach(term => {
@@ -88,6 +89,7 @@ class Dictionary {
    */
   getAllTerms(key) {
     if (key) {
+      key = key.toLowerCase(); // normalize
       if (Object.keys(this.terms).indexOf(key) === -1) {
         return [];
       }
@@ -111,6 +113,8 @@ class Dictionary {
    *  for the requested term
    */
   getOptions(key, term) {
+    key = key.toLowerCase(); // normalize
+    term = term.toLowerCase(); // Normalize
     return this.terms[key] && this.terms[key][term];
   }
 

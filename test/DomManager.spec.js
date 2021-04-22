@@ -54,6 +54,11 @@ describe('DomManager test', () => {
         expected: '<p>Text with <span class="replaced-term" title="term1">flippedterm1</span> and <span class="replaced-term" title="term3">flippedterm3</span> together</p>'
       },
       {
+        msg: 'Case insensitive replacements',
+        input: '<p>Text with Term1</p>',
+        expected: '<p>Text with <span class="replaced-term" title="Term1">flippedterm1</span></p>'
+      },
+      {
         msg: 'Multiple replacements in hierarchical tags',
         input: '<div>Text with term1 <p>and term3</p> inside</div>',
         expected: '<div>Text with <span class="replaced-term" title="term1">flippedterm1</span> <p>and <span class="replaced-term" title="term3">flippedterm3</span></p> inside</div>',
@@ -87,7 +92,6 @@ describe('DomManager test', () => {
         input: '<p>Replacing term1 but also flippedterm3</p>',
         expected: '<p>Replacing <span class="replaced-term" title="term1">flippedterm1</span> but also <span class="replaced-term" title="flippedterm3">term3</span></p>'
       }
-
     ];
     testCases.forEach(t => {
       const result = manager.replace(t.input, 'dict1','dict2', '', !!t.both);
@@ -186,5 +190,4 @@ describe('DomManager test', () => {
       );
     });
   });
-
 });
