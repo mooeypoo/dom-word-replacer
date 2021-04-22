@@ -1,7 +1,7 @@
 .nyc_output
 coverage
 dist
-docs/dist
+docs
 demos/output
 node_modules
 npm-debug.log

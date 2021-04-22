@@ -56,7 +56,7 @@ class DomManager {
   /**
    * Strip script tags and sanitize the given html string.
    *
-   * @param {domino.Document} doc to strip scripts from
+   * @param {Document} doc to strip scripts from
    */
   sanitize(doc) {
     if (this.stripScriptTags) {
@@ -71,7 +71,7 @@ class DomManager {
   /**
    * Inject a CSS string into the DOM as a <style> tag.
    *
-   * @param {domino.Document} doc Document to inject into
+   * @param {Document} doc Document to inject into
    */
   injectCss(doc) {
     if (!this.css) {
@@ -87,7 +87,7 @@ class DomManager {
   /**
    * Add a base url rule through <base> node
    *
-   * @param {domino.Document} doc Document to add the tag to
+   * @param {Document} doc Document to add the tag to
    * @param {string} baseUrl A url representing the base url
    *  for the outputted doc.
    */
@@ -146,7 +146,7 @@ class DomManager {
   /**
    * Perform the actual replacements in the document, based on given keys
    *
-   * @param {domino.Document} doc Document to perform replacements on
+   * @param {Document} doc Document to perform replacements on
    * @param {string} dictKeyFrom The dictionary key used
    *  to look for matches
    * @param {string} dictKeyTo The dictionary key used

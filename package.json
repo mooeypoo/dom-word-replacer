@@ -20,6 +20,7 @@
     ]
   },
   "scripts": {
+    "doc": "jsdoc -c .jsdoc.json",
     "demo": "node demos/run.js",
     "lint": "./node_modules/eslint/bin/eslint.js src tools",
     "test": "mocha --require @babel/register",
@@ -46,23 +47,25 @@
     "babel-eslint": "^10.0.1",
     "chai": "^4.3.4",
     "coveralls": "^3.1.0",
+    "cryptiles": ">=4.1.2",
     "del": "^2.2.2",
+    "dot-prop": ">=4.2.1",
     "easystatic": "^0.1.12",
     "eslint": "^7.24.0",
     "eslint-config-wikimedia": "^0.16.2",
     "eslint-plugin-import": "^2.2.0",
     "eslint-plugin-jsdoc": "^32.3.0",
+    "is-svg": ">=4.2.2",
     "istanbul": "^0.4.5",
+    "js-yaml": ">=3.13.1",
+    "jsdoc": "^3.6.6",
+    "jsdoc-wmf-theme": "0.0.3",
     "mocha": "^8.3.2",
     "nyc": "^15.1.0",
     "rollup": "^0.67.3",
     "rollup-plugin-babel": "^4.0.3",
     "rollup-plugin-commonjs": "^9.2.0",
     "rollup-plugin-node-resolve": "^3.4.0",
-    "sinon": "^10.0.0",
-    "cryptiles": ">=4.1.2",
-    "is-svg": ">=4.2.2",
-    "dot-prop": ">=4.2.1",
-    "js-yaml": ">=3.13.1"
+    "sinon": "^10.0.0"
   }
 }
