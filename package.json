@@ -44,21 +44,21 @@
     "@babel/preset-env": "^7.0.0",
     "@babel/register": "^7.0.0",
     "babel-eslint": "^10.0.1",
-    "chai": "^4.2.0",
-    "coveralls": "^2.11.14",
+    "chai": "^4.3.4",
+    "coveralls": "^3.1.0",
     "del": "^2.2.2",
     "easystatic": "^0.1.12",
     "eslint": "^7.24.0",
     "eslint-config-wikimedia": "^0.16.2",
     "eslint-plugin-import": "^2.2.0",
     "eslint-plugin-jsdoc": "^32.3.0",
-    "istanbul": "^1.1.0-alpha.1",
-    "mocha": "^5.2.0",
-    "nyc": "^13.1.0",
+    "istanbul": "^0.4.5",
+    "mocha": "^8.3.2",
+    "nyc": "^15.1.0",
     "rollup": "^0.67.3",
     "rollup-plugin-babel": "^4.0.3",
     "rollup-plugin-commonjs": "^9.2.0",
     "rollup-plugin-node-resolve": "^3.4.0",
-    "sinon": "^7.1.1"
+    "sinon": "^10.0.0"
   }
 }
