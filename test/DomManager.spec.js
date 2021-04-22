@@ -6,40 +6,40 @@ import serialize from 'w3c-xmlserializer';
 const wrapHtmlResult = str => {
   return `<html xmlns="http://www.w3.org/1999/xhtml"><head></head><body>${str}</body></html>`
 };
+const definition = [
+  {
+    "category": "Category 1",
+    "terms": {
+      "dict1": ["term1"],
+      "dict2": ["flippedterm1"]
+    }
+  },
+  {
+    "category": "Category 2",
+    "terms": {
+      "dict1": ["term2"],
+      "dict2": ["flippedterm2opt1", "flippedterm2opt2"]
+    }
+  },
+  {
+    "category": "Category 3",
+    "terms": {
+      "dict1": ["term3"],
+      "dict2": ["flippedterm3"]
+    }
+  },
+  {
+    "category": "Category 4",
+    "ambiguous": "dict1",
+    "terms": {
+      "dict1": ["term4amb"],
+      "dict2": ["flippedterm4ambopt1", "flippedterm4ambopt2"]
+    }
+  }
+];
 
 describe('DomManager test', () => {
   describe('HTML replacements', () => {
-    const definition = [
-      {
-        "category": "Category 1",
-        "terms": {
-          "dict1": ["term1"],
-          "dict2": ["flippedterm1"]
-        }
-      },
-      {
-        "category": "Category 2",
-        "terms": {
-          "dict1": ["term2"],
-          "dict2": ["flippedterm2opt1", "flippedterm2opt2"]
-        }
-      },
-      {
-        "category": "Category 3",
-        "terms": {
-          "dict1": ["term3"],
-          "dict2": ["flippedterm3"]
-        }
-      },
-      {
-        "category": "Category 4",
-        "ambiguous": "dict1",
-        "terms": {
-          "dict1": ["term4amb"],
-          "dict2": ["flippedterm4ambopt1", "flippedterm4ambopt2"]
-        }
-      }
-    ];
     const dict = new Dictionary('test dictionary', definition);
     const manager = new DomManager(dict);
     const testCases = [
@@ -120,6 +120,16 @@ describe('DomManager test', () => {
       manager.sanitize(doc);
       expect(serialize(doc)).to.equal(wrapHtmlResult('<p>Do not strip this</p>'));
     });
+
+    it('Does not strip full <script> tags if stripScriptTags is false', () => {
+      const noStripManager = new DomManager(dict, { stripScriptTags: false });
+      const htmlString = `<script type="text/javascript">$.ready();</script><p>Do not strip this</p>`;
+      const doc = noStripManager.getDocumentFromHtml(htmlString);
+      noStripManager.sanitize(doc);
+      expect(
+          serialize(doc).indexOf('<script type="text/javascript">$.ready();</script>') > -1
+        ).to.be.true;
+    });
   });
 
   describe('addBaseUrl', () => {
@@ -129,15 +139,52 @@ describe('DomManager test', () => {
     it('Adds a <base> tag where none existed', () => {
       const doc = manager.getDocumentFromHtml('<p>test</p>');
       manager.addBaseUrl(doc, 'http://example.com');
-      expect(serialize(doc)).to.equal('<html xmlns="http://www.w3.org/1999/xhtml"><head><base xmlns="http //www.w3.org/1999/xhtml" href="http://example.com" target="_blank"/></head><body><p>test</p></body></html>');
+      expect(serialize(doc)).to.equal('<html xmlns="http://www.w3.org/1999/xhtml"><head><base href="http://example.com" target="_blank" /></head><body><p>test</p></body></html>');
     });
 
-    it.skip('Adds a <base> tag instead of an existing one', () => {
-      const str = '<html xmlns="http://www.w3.org/1999/xhtml"><head><base xmlns="http //www.w3.org/1999/xhtml" href="http://example.com" target="_blank"/></head><body><p>test</p></body></html>';
-      const doc = manager.getDocumentFromHtml('<html xmlns="http://www.w3.org/1999/xhtml"><head><base xmlns="http //www.w3.org/1999/xhtml" href="http://foobar.com" target="_blank"/></head><body><p>test</p></body></html>');
+    it.skip('Adds a <base> tag on top of of an existing one', () => {
+      const str = '<html xmlns="http://www.w3.org/1999/xhtml"><head><base href="http://example.com" target="_blank" /></head><body><p>test</p></body></html>';
+      const doc = manager.getDocumentFromHtml('<html xmlns="http://www.w3.org/1999/xhtml"><head><base href="http://foobar.com" target="_blank" /></head><body><p>test</p></body></html>');
       manager.addBaseUrl(doc, 'http://example.com');
 
-      expect(serialize(doc)).to.equal('<html xmlns="http://www.w3.org/1999/xhtml"><head><base xmlns="http //www.w3.org/1999/xhtml" href="http://example.com" target="_blank"/></head><body><p>test</p></body></html>');
+      expect(serialize(doc)).to.equal('<html xmlns="http://www.w3.org/1999/xhtml"><head><base href="http://example.com" target="_blank" /><base href="http://foobar.com" target="_blank" /></head><body><p>test</p></body></html>');
     });
   });
+
+  describe('showOriginalTerm', () => {
+    const dict = new Dictionary('test dictionary', definition);
+    const manager = new DomManager(dict, { showOriginalTerm: false });
+
+    it('Respects showOriginalTerm=false', () => {
+      const htmlString = '<p>Replace term1 with something</p>';
+      expect(manager.replace(htmlString, 'dict1', 'dict2')).to.equal(
+        wrapHtmlResult('<p>Replace <span class="replaced-term">flippedterm1</span> with something</p>')
+      );
+    });
+  });
+
+  describe('showDictionaryKeys', () => {
+    const dict = new Dictionary('test dictionary', definition);
+    const manager = new DomManager(dict, { showDictionaryKeys: true });
+
+    it('Respects showDictionaryKeys=false', () => {
+      const htmlString = '<p>Replace term1 with something</p>';
+      expect(manager.replace(htmlString, 'dict1', 'dict2')).to.equal(
+        wrapHtmlResult('<p>Replace <span class="replaced-term" title="term1" data-replaced-from="dict1" data-replaced-to="dict2">flippedterm1</span> with something</p>')
+      );
+    });
+  });
+
+  describe('Inject CSS', () => {
+    const dict = new Dictionary('test dictionary', definition);
+    const manager = new DomManager(dict, { css: '.test { color: red; }' });
+
+    it('Inject CSS', () => {
+      const htmlString = '<p>some html</p>';
+      expect(manager.replace(htmlString, 'dict1', 'dict2')).to.equal(
+        '<html xmlns="http://www.w3.org/1999/xhtml"><head><style>.test { color: red; }</style></head><body><p>some html</p></body></html>'
+      );
+    });
+  });
+
 });

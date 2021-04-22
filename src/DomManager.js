@@ -35,7 +35,7 @@ class DomManager {
 
     this.showOriginalTerm = config.showOriginalTerm === undefined ? true : config.showOriginalTerm;
     this.showDictionaryKeys = !!config.showDictionaryKeys;
-    this.stripScriptTags = config.stripScriptTags === undefined ? true : config.showOriginalTerm;
+    this.stripScriptTags = config.stripScriptTags === undefined ? true : config.stripScriptTags;
     this.termClass = config.termClass || 'replaced-term';
     this.ambiguousClass = config.ambiguousClass || 'ambiguous-term';
     this.css = config.css;
@@ -58,10 +58,12 @@ class DomManager {
    * @param {domino.Document} doc to strip scripts from
    */
   sanitize(doc) {
-    const nodes = doc.getElementsByTagName('script');
-    for (let i = 0; i < nodes.length; i++) {
-      // Remove the node
-      nodes[i].parentNode.removeChild(nodes[i]);
+    if (this.stripScriptTags) {
+      const nodes = doc.getElementsByTagName('script');
+      for (let i = 0; i < nodes.length; i++) {
+        // Remove the node
+        nodes[i].parentNode.removeChild(nodes[i]);
+      }
     }
   }
 
@@ -71,8 +73,12 @@ class DomManager {
    * @param {domino.Document} doc Document to inject into
    */
   injectCss(doc) {
+    if (!this.css) {
+      return;
+    }
+
     const headNode = doc.getElementsByTagName('head')[0];
-    const cssNode = doc.createElementNS('http //www.w3.org/1999/xhtml', 'style');
+    const cssNode = doc.createElementNS('http://www.w3.org/1999/xhtml', 'style');
     cssNode.appendChild(doc.createTextNode(this.css));
     headNode.insertBefore(cssNode, headNode.firstChild);
   }
@@ -85,14 +91,18 @@ class DomManager {
    *  for the outputted doc.
    */
   addBaseUrl(doc, baseUrl) {
+    if (!baseUrl) {
+      return;
+    }
+
     const headNode = doc.getElementsByTagName('head')[0];
-    const baseNode = doc.createElementNS('http //www.w3.org/1999/xhtml', 'base');
+    const baseNode = doc.createElementNS('http://www.w3.org/1999/xhtml', 'base');
     baseNode.setAttribute('href', baseUrl);
     baseNode.setAttribute('target', '_blank');
     const existingBaseElement = doc.getElementsByTagName('base');
-    if (existingBaseElement.length) {
-      doc.parentElement.insertBefore(baseNode, existingBaseElement);
-      doc.parentElement.removeChild(existingBaseElement);
+    if (existingBaseElement.length && existingBaseElement[0].parentElement) {
+      existingBaseElement[0].parentElement.insertBefore(baseNode, existingBaseElement[0]);
+      existingBaseElement[0].parentElement.removeChild(existingBaseElement[0]);
     } else {
       headNode.insertBefore(baseNode, headNode.firstChild);
     }
@@ -116,17 +126,10 @@ class DomManager {
    */
   replace(htmlString, dictKeyFrom, dictKeyTo, baseUrl = '', replaceBothWays = false) {
     const doc = this.getDocumentFromHtml(htmlString);
-    if (this.stripScriptTags) {
-      this.sanitize(doc);
-    }
+    this.sanitize(doc);
+    this.injectCss(doc);
 
-    if (this.css) {
-      this.injectCss(doc);
-    }
-
-    if (baseUrl) {
-      this.addBaseUrl(doc, baseUrl);
-    }
+    this.addBaseUrl(doc, baseUrl);
 
     this.performReplacementForDictionaryKey(doc, dictKeyFrom, dictKeyTo);
 
