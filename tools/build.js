@@ -36,8 +36,8 @@ promise = promise.then(() => del(['dist/*']));
         runtimeHelpers: true,
         presets: pkg.babel.presets.map(x => (x === 'latest' ? ['latest', { es2015: { modules: false } }] : x)),
       })),
-      commonjs(),
-    ],
+      commonjs()
+    ]
   })).then(bundle => bundle.write({
     file: `dist/${format === 'cjs' ? 'index' : `index.${format}`}.js`,
     format,

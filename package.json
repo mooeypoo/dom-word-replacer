@@ -1,6 +1,6 @@
 {
   "name": "@mooeypoo/dom-word-replacer",
-  "version": "0.9.5",
+  "version": "0.9.6",
   "author": "Moriel Schottlender",
   "license": "MIT",
   "description": "A javascript library that allows replacing words in DOM documents.",
