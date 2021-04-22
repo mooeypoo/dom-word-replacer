@@ -21,7 +21,7 @@
   },
   "scripts": {
     "demo": "node demos/run.js",
-    "lint": "eslint src",
+    "lint": "./node_modules/eslint/bin/eslint.js src tools",
     "test": "mocha --require @babel/register",
     "test:watch": "mocha --require @babel/register --reporter min --watch",
     "test:cover": "nyc --reporter=lcov --reporter=text-lcov npm test",
