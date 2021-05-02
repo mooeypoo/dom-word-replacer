@@ -40,8 +40,8 @@ class DomWordReplacer {
    */
   replace(htmlString, dictKeyFrom, dictKeyTo, options = {}) {
     return this.manager.replace(
-      htmlString, 
-      dictKeyFrom, 
+      htmlString,
+      dictKeyFrom,
       dictKeyTo,
       options
     );

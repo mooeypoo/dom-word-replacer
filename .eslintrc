@@ -2,7 +2,7 @@
 	"extends": [
 		"wikimedia/server"
 	],
-  "parser": "babel-eslint",
+	"parser": "babel-eslint",
 	"globals": {
 		"SpreadsheetApp": "readonly",
 		"ContentService": "readonly"
@@ -14,13 +14,13 @@
 		"jsdoc"
 	],
 	"ignorePatterns": [
-    "test/*",
-    "demos/*",
+		"test/*",
+		"demos/*",
 		"node_modules/*",
 		"docs/*"
 	],
 	"rules": {
-    "indent": ["error", 2],
+		"indent": ["error", 2],
 		"camelcase": [
 			"error",
 			{
@@ -43,6 +43,14 @@
 			"as-needed"
 		],
 		"jsdoc/check-alignment": 1,
+		"jsdoc/no-undefined-types": [
+			"error",
+			{
+				"definedTypes": [
+					"Document"
+				]
+			}
+		],
 		"jsdoc/require-jsdoc": [
 			"error",
 			{
