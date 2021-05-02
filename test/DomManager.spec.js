@@ -6,42 +6,44 @@ import serialize from 'w3c-xmlserializer';
 const wrapHtmlResult = str => {
   return `<html xmlns="http://www.w3.org/1999/xhtml"><head></head><body>${str}</body></html>`
 };
-const definition = [
-  {
-    "category": "Category 1",
-    "terms": {
-      "dict1": ["term1"],
-      "dict2": ["flippedterm1"]
+const dictDefinition = {
+  name: 'Test dictionary',
+  terms: [
+    {
+      "category": "Category 1",
+      "terms": {
+        "dict1": ["term1"],
+        "dict2": ["flippedterm1"]
+      }
+    },
+    {
+      "category": "Category 2",
+      "terms": {
+        "dict1": ["term2"],
+        "dict2": ["flippedterm2opt1", "flippedterm2opt2"]
+      }
+    },
+    {
+      "category": "Category 3",
+      "terms": {
+        "dict1": ["term3"],
+        "dict2": ["flippedterm3"]
+      }
+    },
+    {
+      "category": "Category 4",
+      "ambiguous": "dict1",
+      "terms": {
+        "dict1": ["term4amb"],
+        "dict2": ["flippedterm4ambopt1", "flippedterm4ambopt2"]
+      }
     }
-  },
-  {
-    "category": "Category 2",
-    "terms": {
-      "dict1": ["term2"],
-      "dict2": ["flippedterm2opt1", "flippedterm2opt2"]
-    }
-  },
-  {
-    "category": "Category 3",
-    "terms": {
-      "dict1": ["term3"],
-      "dict2": ["flippedterm3"]
-    }
-  },
-  {
-    "category": "Category 4",
-    "ambiguous": "dict1",
-    "terms": {
-      "dict1": ["term4amb"],
-      "dict2": ["flippedterm4ambopt1", "flippedterm4ambopt2"]
-    }
-  }
-];
+  ]
+};
 
 describe('DomManager test', () => {
   describe('HTML replacements', () => {
-    const dict = new Dictionary('test dictionary', definition);
-    const manager = new DomManager(dict);
+    const manager = new DomManager(dictDefinition);
     const testCases = [
       {
         msg: 'Single replacement in h1 tag',
@@ -124,7 +126,7 @@ describe('DomManager test', () => {
 
   describe('sanitize', () => {
     const dict = new Dictionary('test dictionary', []);
-    const manager = new DomManager(dict);
+    const manager = new DomManager(dictDefinition);
     
     it('Strips full <script> tags', () => {
       const htmlString = `<script type="text/javascript">$.ready();</script><p>Do not strip this</p>`;
@@ -141,7 +143,7 @@ describe('DomManager test', () => {
     });
 
     it('Does not strip full <script> tags if stripScriptTags is false', () => {
-      const noStripManager = new DomManager(dict, { stripScriptTags: false });
+      const noStripManager = new DomManager(dictDefinition, { stripScriptTags: false });
       const htmlString = `<script type="text/javascript">$.ready();</script><p>Do not strip this</p>`;
       const doc = noStripManager.getDocumentFromHtml(htmlString);
       noStripManager.sanitize(doc);
@@ -153,7 +155,7 @@ describe('DomManager test', () => {
 
   describe('addBaseUrl', () => {
     const dict = new Dictionary('test dictionary', []);
-    const manager = new DomManager(dict);
+    const manager = new DomManager(dictDefinition);
 
     it('Adds a <base> tag where none existed', () => {
       const doc = manager.getDocumentFromHtml('<p>test</p>');
@@ -171,8 +173,7 @@ describe('DomManager test', () => {
   });
 
   describe('showOriginalTerm', () => {
-    const dict = new Dictionary('test dictionary', definition);
-    const manager = new DomManager(dict, { showOriginalTerm: false });
+    const manager = new DomManager(dictDefinition, { showOriginalTerm: false });
 
     it('Respects showOriginalTerm=false', () => {
       const htmlString = '<p>Replace term1 with something</p>';
@@ -183,8 +184,7 @@ describe('DomManager test', () => {
   });
 
   describe('showDictionaryKeys', () => {
-    const dict = new Dictionary('test dictionary', definition);
-    const manager = new DomManager(dict, { showDictionaryKeys: true });
+    const manager = new DomManager(dictDefinition, { showDictionaryKeys: true });
 
     it('Respects showDictionaryKeys=false', () => {
       const htmlString = '<p>Replace term1 with something</p>';
@@ -194,9 +194,26 @@ describe('DomManager test', () => {
     });
   });
 
+  describe('keepSameCase', () => {
+    it('Respects keepSameCase=true', () => {
+      const manager = new DomManager(dictDefinition, { keepSameCase: true });
+      const htmlString = '<p>Replace Term1 and TERM3</p>';
+      expect(manager.replace(htmlString, 'dict1', 'dict2')).to.equal(
+        wrapHtmlResult('<p>Replace <span class="replaced-term" title="Term1">Flippedterm1</span> and <span class="replaced-term" title="TERM3">FLIPPEDTERM3</span></p>')
+      );
+    });
+
+    it('Respects keepSameCase=false', () => {
+      const manager = new DomManager(dictDefinition, { keepSameCase: false });
+      const htmlString = '<p>Replace Term1 and TERM3</p>';
+      expect(manager.replace(htmlString, 'dict1', 'dict2')).to.equal(
+        wrapHtmlResult('<p>Replace <span class="replaced-term" title="Term1">flippedterm1</span> and <span class="replaced-term" title="TERM3">flippedterm3</span></p>')
+      );
+    });
+  });
+
   describe('Inject CSS', () => {
-    const dict = new Dictionary('test dictionary', definition);
-    const manager = new DomManager(dict, { css: '.test { color: red; }' });
+    const manager = new DomManager(dictDefinition, { css: '.test { color: red; }' });
 
     it('Inject CSS', () => {
       const htmlString = '<p>some html</p>';

@@ -1,7 +1,6 @@
 import domino from 'domino';
 import serialize from 'w3c-xmlserializer';
-import Dictionary from './Dictionary.js';
-import Utils from './Utils.js';
+import Replacer from './Replacer';
 /**
  * Manage the DOM documnent
  *
@@ -11,7 +10,8 @@ class DomManager {
   /**
    * Instantiate with configuration options
    *
-   * @param {Dictionary} dictionary Replacement dictionary
+   * @param {Object} dictionaryDefinition Replacement dictionary
+   *  definition object.
    * @param {Object} [config] Configuration options
    * @param {boolean} [config.showOriginalTerm=true] Show the
    *  original term that was replaced in the title="" prop of
@@ -35,8 +35,8 @@ class DomManager {
    *  class name used for the wrapper of replaced terms, noting
    *  an ambiguous replacement.
    */
-  constructor(dictionary, config = {}) {
-    this.dictionary = dictionary;
+  constructor(dictionaryDefinition, config = {}) {
+    this.replacer = new Replacer(dictionaryDefinition);
 
     this.showOriginalTerm = config.showOriginalTerm === undefined ? true : config.showOriginalTerm;
     this.stripScriptTags = config.stripScriptTags === undefined ? true : config.stripScriptTags;
@@ -161,11 +161,7 @@ class DomManager {
    */
   performReplacementForDictionaryKey(doc, dictKeyFrom, dictKeyTo) {
     const regex = new RegExp(
-      this.dictionary.getAllTerms(dictKeyFrom)
-        .map(v => {
-          return `\\b${Utils.escapeRegExp(v)}\\b`;
-        })
-        .join('|'),
+      this.replacer.getRegExpForAllTerms(dictKeyFrom),
       'gi'
     );
 
@@ -193,12 +189,8 @@ class DomManager {
       // For all matches, perform the replacement
       const newNodeContent = node.textContent.replace(regex, match => {
         // Look it up in the dictionary
-        const replacementData = this.dictionary
-          .getSingleOption(dictKeyFrom, match, dictKeyTo);
-        if (!replacementData.term) {
-          // Sanity check
-          return match;
-        }
+        const replacementData = this.replacer
+          .getSingleReplacementData(match, dictKeyFrom, dictKeyTo);
 
         // Wrap with span and class (add ambiguous class if needed)
         const props = [];
@@ -216,20 +208,9 @@ class DomManager {
           cssClasses.push(this.ambiguousClass);
         }
 
-        let replacedTerm = replacementData.term;
-        if (this.keepSameCase) {
-          // Check whether the match is capitalized or all-caps
-          // The test checks if the string is not the same at
-          if (match.charAt(0) === match.charAt(0).toUpperCase()) {
-            if (match === match.toUpperCase()) {
-              // All-caps
-              replacedTerm = replacedTerm.toUpperCase();
-            } else if (match === Utils.capitalizeString(match)) {
-              // Capitalize only first letter
-              replacedTerm = Utils.capitalizeString(replacedTerm);
-            }
-          }
-        }
+        const replacedTerm = this.keepSameCase ?
+          this.replacer.matchCase(match, replacementData.term) :
+          replacementData.term;
 
         return `<span class="${cssClasses.join(' ')}" ${props.join(' ')}>${replacedTerm}</span>`;
       });

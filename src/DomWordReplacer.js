@@ -1,5 +1,5 @@
 import DomManager from './DomManager.js';
-import Dictionary from './Dictionary.js';
+import Replacer from './Replacer.js';
 
 /**
  * Replace words in an HTML document
@@ -15,7 +15,7 @@ class DomWordReplacer {
    */
   constructor(dictDefinition, config) {
     this.manager = new DomManager(
-      new Dictionary(dictDefinition.name, dictDefinition.terms),
+      dictDefinition,
       config
     );
   }
