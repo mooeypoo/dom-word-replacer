@@ -18,7 +18,7 @@ class DemoRunner {
       }
       console.time('Replacer ' + this.name);
       const replacer = new DomWordReplacer(this.dictDefinition, this.replacerOptions.config);
-      let result = replacer.replace(html, this.keys[0], this.keys[1], this.replacerOptions.baseUrl, true);
+      let result = replacer.replace(html, this.keys[0], this.keys[1], { baseUrl: this.replacerOptions.baseUrl, replaceBothWays: true });
       console.timeEnd('Replacer ' + this.name);
 
       fs.writeFile(`${__dirname}/output/Replaced - ${this.name}.html`, result, err => {

@@ -109,7 +109,7 @@ describe('DomManager test', () => {
       }
     ];
     testCases.forEach(t => {
-      const result = manager.replace(t.input, 'dict1','dict2', '', !!t.both);
+      const result = manager.replace(t.input, 'dict1','dict2', { replaceBothWays: !!t.both });
       it(t.msg, () => {
         if (Array.isArray(t.expected)) {
           // In this case, we may have two options, so check if at least one (but no others) is correct

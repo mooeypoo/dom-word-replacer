@@ -122,24 +122,26 @@ class DomManager {
    *  to look for matches
    * @param {string} dictKeyTo The dictionary key used
    *  to look for replacements
-   * @param {string} [baseUrl] A url representing the new
+   * @param {Object} [options] Optional paramters for the
+   *  replacement operation
+   * @param {string} [options.baseUrl] A url representing the new
    *  <base> href for the given document. Ignore if not
    *  given.
-   * @param {boolean} [replaceBothWays] If set to true, the
+   * @param {boolean} [options.replaceBothWays] If set to true, the
    *  replacement will happen twice -- once for the keyFrom,
    *  and once for the keyTo, producing a two-way translation.
    * @return {string} New html content
    */
-  replace(htmlString, dictKeyFrom, dictKeyTo, baseUrl = '', replaceBothWays = false) {
+  replace(htmlString, dictKeyFrom, dictKeyTo, options = {}) {
     const doc = this.getDocumentFromHtml(htmlString);
     this.sanitize(doc);
     this.injectCss(doc);
 
-    this.addBaseUrl(doc, baseUrl);
+    this.addBaseUrl(doc, options.baseUrl);
 
     this.performReplacementForDictionaryKey(doc, dictKeyFrom, dictKeyTo);
 
-    if (replaceBothWays) {
+    if (options.replaceBothWays) {
       // Replace the other way too
       this.performReplacementForDictionaryKey(doc, dictKeyTo, dictKeyFrom);
     }

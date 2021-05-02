@@ -17,7 +17,7 @@ npm install --save @mooeypoo/dom-word-replacer
 
 ```
 const rep = new DomWordReplacer(dictionaryDefinition);
-const result = rep.replace(htmlString, 'dict1', 'dict2', 'http://sample.com', false);
+const result = rep.replace(htmlString, 'dict1', 'dict2', { baseUrl: 'http://sample.com', replaceBothWays: false});
 ```
 
 # Dictionary definition

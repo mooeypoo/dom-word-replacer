@@ -28,16 +28,23 @@ class DomWordReplacer {
    *  to look for matches
    * @param {string} dictKeyTo The dictionary key used
    *  to look for replacements
-   * @param {string} [baseUrl] A url representing the new
+   * @param {Object} [options] Optional paramters for the
+   *  replacement operation
+   * @param {string} [options.baseUrl] A url representing the new
    *  <base> href for the given document. Ignore if not
    *  given.
-   * @param {boolean} [replaceBothWays] If set to true, the
+   * @param {boolean} [options.replaceBothWays] If set to true, the
    *  replacement will happen twice -- once for the keyFrom,
    *  and once for the keyTo, producing a two-way translation.
    * @return {string} New html content
    */
-  replace(htmlString, dictKeyFrom, dictKeyTo, baseUrl = '', replaceBothWays = false) {
-    return this.manager.replace(htmlString, dictKeyFrom, dictKeyTo, baseUrl, replaceBothWays);
+  replace(htmlString, dictKeyFrom, dictKeyTo, options = {}) {
+    return this.manager.replace(
+      htmlString, 
+      dictKeyFrom, 
+      dictKeyTo,
+      options
+    );
   }
 }
 
