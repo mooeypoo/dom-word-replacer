@@ -54,9 +54,24 @@ describe('DomManager test', () => {
         expected: '<p>Text with <span class="replaced-term" title="term1">flippedterm1</span> and <span class="replaced-term" title="term3">flippedterm3</span> together</p>'
       },
       {
-        msg: 'Case insensitive replacements',
+        msg: 'Case insensitive replacements; keep case (capitalized)',
         input: '<p>Text with Term1</p>',
-        expected: '<p>Text with <span class="replaced-term" title="Term1">flippedterm1</span></p>'
+        expected: '<p>Text with <span class="replaced-term" title="Term1">Flippedterm1</span></p>'
+      },
+      {
+        msg: 'Case insensitive replacements; keep case (all caps)',
+        input: '<p>Text with TERM1</p>',
+        expected: '<p>Text with <span class="replaced-term" title="TERM1">FLIPPEDTERM1</span></p>'
+      },
+      {
+        msg: 'Case insensitive replacements; mixed case = all lowercase',
+        input: '<p>Text with TErM1</p>',
+        expected: '<p>Text with <span class="replaced-term" title="TErM1">flippedterm1</span></p>'
+      },
+      {
+        msg: 'Replacement is first word in title',
+        input: '<h1>Term1 (replacement)</h1>',
+        expected: '<h1><span class="replaced-term" title="Term1">Flippedterm1</span> (replacement)</h1>'
       },
       {
         msg: 'Multiple replacements in hierarchical tags',

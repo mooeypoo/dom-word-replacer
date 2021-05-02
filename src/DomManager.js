@@ -22,6 +22,10 @@ class DomManager {
    *  replacement wrapper.
    * @param {boolean} [config.stripScriptTags=true] Automatically
    *  strip and remove all <script> tags from the result
+   * @param {boolean} [config.keepSameCase=true] Attempt to keep the
+   *  same case from the original word when replacing. The only cases
+   *  that are kept are capitalization ('Foo') and full caps ('FOO')
+   *  otherwise the match will be outputted all-lowercase.
    * @param {string} [config.css] A css string to inject to the page.
    *  This is used mostly to style the replacement term classes
    *  on the outputted html.
@@ -35,8 +39,9 @@ class DomManager {
     this.dictionary = dictionary;
 
     this.showOriginalTerm = config.showOriginalTerm === undefined ? true : config.showOriginalTerm;
-    this.showDictionaryKeys = !!config.showDictionaryKeys;
     this.stripScriptTags = config.stripScriptTags === undefined ? true : config.stripScriptTags;
+    this.keepSameCase = config.keepSameCase === undefined ? true : config.keepSameCase;
+    this.showDictionaryKeys = !!config.showDictionaryKeys;
     this.termClass = config.termClass || 'replaced-term';
     this.ambiguousClass = config.ambiguousClass || 'ambiguous-term';
     this.css = config.css;
@@ -209,7 +214,22 @@ class DomManager {
           cssClasses.push(this.ambiguousClass);
         }
 
-        return `<span class="${cssClasses.join(' ')}" ${props.join(' ')}>${replacementData.term}</span>`;
+        let replacedTerm = replacementData.term;
+        if (this.keepSameCase) {
+          // Check whether the match is capitalized or all-caps
+          // The test checks if the string is not the same at
+          if (match.charAt(0) === match.charAt(0).toUpperCase()) {
+            if (match === match.toUpperCase()) {
+              // All-caps
+              replacedTerm = replacedTerm.toUpperCase();
+            } else if (match === Utils.capitalizeString(match)) {
+              // Capitalize only first letter
+              replacedTerm = Utils.capitalizeString(replacedTerm);
+            }
+          }
+        }
+
+        return `<span class="${cssClasses.join(' ')}" ${props.join(' ')}>${replacedTerm}</span>`;
       });
 
       // Replace the current node with the new content

@@ -23,6 +23,17 @@ class Utils {
   static getRandomArrValue(arr) {
     return arr[Math.floor(Math.random() * arr.length)];
   }
+
+  /**
+   * Capitalize the given string; whatever the given case,
+   * output a string whre only the first character is capitalized.
+   *
+   * @param {string} str Requested string
+   * @return {string} String with the first character capitalized.
+   */
+  static capitalizeString(str) {
+    return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+  }
 }
 
 export default Utils;

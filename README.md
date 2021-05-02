@@ -134,6 +134,16 @@ it will be injected (after replacement) into the new document, in a `<style>` ta
 
 By default, the wrapper span of every replacement will include the original word that was replaced in the `title` property. To disable that feature, set `showOriginalTerm` to false.
 
+### Keep capitalization and case
+
+By default, the system will attempt to mimic the same case of the matched word in two cases:
+- Capitalized replacement ('Foo' -> 'Bar')
+- All-caps replacements ('FOO' -> 'BAR')
+
+All other cases will produce a replacement in all-lower case.
+
+To avoid automatically capitalizing, you can set the config option `keepSameCase` to false.
+
 ### Configuration example
 
 ```js
