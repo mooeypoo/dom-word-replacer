@@ -1,5 +1,4 @@
 import DomManager from './DomManager.js';
-import Replacer from './Replacer.js';
 
 /**
  * Replace words in an HTML document
