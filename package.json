@@ -28,9 +28,7 @@
     "test:cover": "nyc --reporter=lcov --reporter=text-lcov npm test",
     "coveralls": "cat ./coverage/lcov.info | coveralls",
     "build": "node tools/build",
-    "prepublish": "npm run build",
-    "publish:docs": "easystatic deploy docs --repo mooeypoo/dom-word-replacer",
-    "start": "easystatic start docs"
+    "prepublish": "npm run build"
   },
   "dependencies": {
     "@babel/runtime": "^7.0.0",
@@ -50,7 +48,6 @@
     "cryptiles": ">=4.1.2",
     "del": "^2.2.2",
     "dot-prop": ">=4.2.1",
-    "easystatic": "^0.1.12",
     "eslint": "^7.24.0",
     "eslint-config-wikimedia": "^0.16.2",
     "eslint-plugin-import": "^2.2.0",
