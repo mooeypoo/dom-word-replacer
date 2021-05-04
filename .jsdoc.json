@@ -29,8 +29,9 @@
 				"Array": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array",
 				"Error": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error",
 				"HTMLElement": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/HTMLElement",
-        "Object": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object",
-        "Document": "https://developer.mozilla.org/en-US/docs/Web/API/Document"
+				"Object": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object",
+				"Document": "https://developer.mozilla.org/en-US/docs/Web/API/Document",
+				"Node": "https://developer.mozilla.org/en-US/docs/Web/API/Node"
 			}
 		}
 	}

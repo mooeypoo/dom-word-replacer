@@ -173,86 +173,139 @@ class DomManager {
       'gi'
     );
 
-    // Traverse the dom tree
-    // NodeFilter.SHOW_TEXT = 4
+    // Traverse the dom tree; NodeFilter.SHOW_TEXT = 4
     const tw = doc.createNodeIterator(doc.body, 4, null, false);
     let node = tw.nextNode();
+
     while (node) {
-      const matches = node.textContent.match(regex);
-      if (!matches || !matches.length) {
-        // Skip if there was no match
+      if (!this.isNodeRelevant(node, regex)) {
+        // Skip if the node is not relevant for replacement
         node = tw.nextNode();
         continue;
       }
 
-      // Make sure the parent does not already have the classes
-      if (
-        (node.classList && node.classList.contains(this.termClass)) ||
-        (node.parentNode.classList && node.parentNode.classList.contains(this.termClass))
-      ) {
-        node = tw.nextNode();
-        continue;
-      }
-
-      // For all matches, perform the replacement
-      const newNodeContent = node.textContent.replace(regex, match => {
-
-        // Wrap with span and class (add ambiguous class if needed)
-        const props = [];
-        const cssClasses = [this.termClass];
-        if (this.showOriginalTerm && !this.suggestionMode) {
-          props.push(`title="${match}"`);
-        }
-
-        if (this.showDictionaryKeys) {
-          // Add data- props
-          props.push(`data-replaced-from="${dictKeyFrom}"`);
-          props.push(`data-replaced-to="${dictKeyTo}"`);
-        }
-
-        // Look it up in the dictionary
-        let replacedTerm = match;
-        let replacementData = {};
-        if (!this.suggestionMode) {
-          replacementData = this.replacer
-            .getSingleReplacementData(match, dictKeyFrom, dictKeyTo);
-
-          replacedTerm = this.keepSameCase ?
-            this.replacer.matchCase(match, replacementData.term) :
-            replacementData.term;
-        } else {
-          // Suggestion mode
-          replacementData = this.replacer
-            .getAllReplacementsData(match, dictKeyFrom, dictKeyTo);
-
-          const termList = replacementData.terms
-            .map(t => {
-              return `'${Utils.encodeHTML(t)}'`;
-            })
-            .join(',');
-          props.push(`data-replacement-options="[${termList}]"`);
-        }
-
-        if (replacementData.ambiguous) {
-          cssClasses.push(this.ambiguousClass);
-        }
-        // Replacement
-        return `<span class="${cssClasses.join(' ')}" ${props.join(' ')}>${replacedTerm}</span>`;
-      });
+      // For all matches inside the node text, perform the replacement
+      const newNodeContent = node.textContent.replace(
+        regex,
+        match => this.getMatchReplacementWrapper(match, dictKeyFrom, dictKeyTo)
+      );
 
       // Replace the current node with the new content
       const nodeDoc = this.getDocumentFromHtml(`<div>${newNodeContent}</div>`);
       const newNode = nodeDoc.getElementsByTagName('div')[0];
       for (let i = 0; i < newNode.childNodes.length; i++) {
         const child = newNode.childNodes[i];
-        // Clone pieces into the old node
+        // Clone pieces before the old node
         node.parentNode.insertBefore(doc.importNode(child, true), node);
       }
 
       // Get rid of the old node
       node.parentNode.removeChild(node);
+      // Move to the next node
       node = tw.nextNode();
     }
+  }
+
+  /**
+   * Get the string that replaces each found match in the node text.
+   * This will return a string of the html span wrapper with its given
+   * classes and values.
+   *
+   * @param {string} match The matching string to be replaced
+   * @param {string} dictKeyFrom The dictionary key used
+   *  to look for matches
+   * @param {string} dictKeyTo The dictionary key used
+   *  to look for replacements
+   * @return {string} The replacement string (wrapper span)
+   */
+  getMatchReplacementWrapper(match, dictKeyFrom, dictKeyTo) {
+    // Look it up in the dictionary
+    const replacementData = this.suggestionMode ?
+      this.replacer.getAllReplacementsData(match, dictKeyFrom, dictKeyTo) :
+      this.replacer.getSingleReplacementData(match, dictKeyFrom, dictKeyTo);
+
+    let visibleTerm = match;
+    if (!this.suggestionMode) {
+      // Match case
+      visibleTerm = this.keepSameCase ?
+        this.replacer.matchCase(match, replacementData.term) :
+        replacementData.term;
+    }
+
+    // Replacement
+    const props = this.collectWrapperProps(match, dictKeyFrom, dictKeyTo, replacementData);
+    return `<span ${props}>${visibleTerm}</span>`;
+  }
+  /**
+   * Check whether the given node is relevant for replacement.
+   *
+   * @param {Node} node Requested node
+   * @param {RegExp} regex Regular expression for matches inside
+   *  the node text content
+   * @return {boolean} Given node is relevant for replacement
+   */
+  isNodeRelevant(node, regex) {
+    // Skip this node if it or its parent already has the replacement class
+    if (
+      node.classList && node.classList.contains(this.termClass) ||
+      node.parentNode.classList && node.parentNode.classList.contains(this.termClass)
+    ) {
+      return false;
+    }
+
+    // Look for matches inside the text
+    const matches = node.textContent.match(regex);
+
+    if (
+      // Skip the node if there are no matches
+      !matches ||
+      !matches.length
+    ) {
+      return false;
+    }
+
+    return true;
+  }
+  /**
+   * Collect the required props for the wrapper span that
+   * wraps each matched terms.
+   *
+   * @param {string} matchedTerm Matched term
+   * @param {string} dictKeyFrom The dictionary key used
+   *  to look for matches
+   * @param {string} dictKeyTo The dictionary key used
+   *  to look for replacements
+   * @param {Object} replacementData Object representing
+   *  the replacement or suggestion data
+   * @return {string} A string of props and css classes,
+   *  sanitized, for the wrapper span
+   */
+  collectWrapperProps(matchedTerm, dictKeyFrom, dictKeyTo, replacementData) {
+    const props = [];
+
+    if (this.showOriginalTerm && !this.suggestionMode) {
+      props.push(`title="${Utils.encodeHTML(matchedTerm)}"`);
+    }
+
+    if (this.showDictionaryKeys) {
+      // Add data- props
+      props.push(`data-replaced-from="${Utils.encodeHTML(dictKeyFrom)}"`);
+      props.push(`data-replaced-to="${Utils.encodeHTML(dictKeyTo)}"`);
+    }
+
+    if (this.suggestionMode) {
+      const termList = replacementData.terms
+        .map(t => `'${Utils.encodeHTML(t)}'`)
+        .join(',');
+      props.push(`data-replacement-options="[${termList}]"`);
+    }
+
+    const cssClasses = [this.termClass];
+    if (replacementData.ambiguous) {
+      cssClasses.push(this.ambiguousClass);
+    }
+
+    return `class="${cssClasses.join(' ')}" ${props.join(' ')}`;
   }
 }
 

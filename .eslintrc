@@ -47,7 +47,8 @@
 			"error",
 			{
 				"definedTypes": [
-					"Document"
+					"Document",
+					"Node"
 				]
 			}
 		],
