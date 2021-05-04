@@ -35,9 +35,20 @@ class DomWordReplacer {
    * @param {boolean} [options.replaceBothWays] If set to true, the
    *  replacement will happen twice -- once for the keyFrom,
    *  and once for the keyTo, producing a two-way translation.
+   * @param {boolean} deprecatedReplaceBothWays DEPRECATED as parameter
    * @return {string} New html content
    */
-  replace(htmlString, dictKeyFrom, dictKeyTo, options = {}) {
+  replace(htmlString, dictKeyFrom, dictKeyTo, options = {}, deprecatedReplaceBothWays = false) {
+    // DEPRECATE using baseUrl and replaceBothWays as individual parameters
+    // Deprecated @ v0.9.9
+    if (options && typeof options !== 'object') {
+      console.warn('`DomWordReplaceer.replace`: The parameters baseUrl and replaceBothWays are deprecated. Use `options` object instead.');
+      options = {
+        baseUrl: options,
+        replaceBothWays: deprecatedReplaceBothWays
+      };
+    }
+
     return this.manager.replace(
       htmlString,
       dictKeyFrom,

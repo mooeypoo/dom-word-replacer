@@ -5,8 +5,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Deprecated
+- Deprecate using `baseUrl` and `useBothWays` as individual parameters in `DomWordReplacer.replace()` method. Use `options` object instead.
+
 ### Changed
-- BREAKING: Replace `.replace(...)` method parameters with an `options` config object
+- Replace `.replace(...)` method parameters with an `options` config object
 
 ### Added
 - Add 'suggestionMode' config option
