@@ -42,12 +42,16 @@ class Dictionary {
 
       return ambiguousData.indexOf(key) > -1;
     };
+
     this.terms = {};
     termArray.forEach(data => {
       Object.keys(data.terms).forEach(key => {
+        // Normalize: Lowercase all keys and terms
         key = key.toLowerCase();
-        this.terms[key] = this.terms[key] || {};
+        data.terms[key] = data.terms[key].map(t => t.toLowerCase());
 
+        // Store in main map
+        this.terms[key] = this.terms[key] || {};
         data.terms[key].forEach(term => {
           const replaceOptions = Object.assign({}, data.terms);
           // Remove self key

@@ -42,6 +42,10 @@ class Utils {
    * @return {string} Safe string for DOM properties
    */
   static encodeHTML(str) {
+    if (!str) {
+      return;
+    }
+
     return str
       .replace(/"/g, '&quot;')
       .replace(/'/g, '&apos;')
