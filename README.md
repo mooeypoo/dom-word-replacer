@@ -119,6 +119,14 @@ In the case of his/hers/her, the term is only ambiguous if the translation is fr
 
 There are several configuration options available for the replacer.
 
+### Suggestion mode
+
+Using suggestion mode, the system will not replace the terms in the DOM, it will mark them (as it does replacements, with a wrapper span and given classes) and provide all available replacements in a `data-replacement-options` prop in the wrapper span.
+
+The purpose of this is to enable frontend systems to then discuss available options for the text without outright changing it in the original. 
+
+To enable suggestio mode, set the config variable to `suggestionMode: true`
+
 ### CSS Classes
 
 The replacer wraps each replacement with a `<span>` that has an associated class to it. The default class is `replaced-term`. This class name can be changed using the config property `termClass`.
