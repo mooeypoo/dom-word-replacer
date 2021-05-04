@@ -24,7 +24,7 @@ describe('Benchmark test', () => {
         const replacer = new DomWordReplacer(dictionaryDefinition);
         let result = replacer.replace(html, 'men', 'women', { baseUrl: 'https://en.wikipedia.org', replaceBothWays: true });
         const endTime = performance.now();
-        expect(endTime - startTime).to.be.at.most(1000);
+        expect(endTime - startTime).to.be.at.most(2000);
         done();
       });
     });
