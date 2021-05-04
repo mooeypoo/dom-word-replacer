@@ -34,6 +34,21 @@ class Utils {
   static capitalizeString(str) {
     return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
   }
+
+  /**
+   * Safely encode string for use inside HTML properties
+   *
+   * @param {string} str Given string
+   * @return {string} Safe string for DOM properties
+   */
+  static encodeHTML(str) {
+    return str
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&apos;')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;');
+  }
 }
 
 export default Utils;

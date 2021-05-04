@@ -1,6 +1,8 @@
 import domino from 'domino';
 import serialize from 'w3c-xmlserializer';
 import Replacer from './Replacer';
+import Utils from './Utils';
+
 /**
  * Manage the DOM documnent
  *
@@ -26,6 +28,11 @@ class DomManager {
    *  same case from the original word when replacing. The only cases
    *  that are kept are capitalization ('Foo') and full caps ('FOO')
    *  otherwise the match will be outputted all-lowercase.
+   * @param {boolean} [config.suggestionMode] A mode that does not
+   *  replace the given words. Instead, it tags the matches with a
+   *  span that provides the possible option replacements and whether
+   *  they are ambiguous. This can then be used in a frontend to provide
+   *  suggestions for replacements without outright replacing the words.
    * @param {string} [config.css] A css string to inject to the page.
    *  This is used mostly to style the replacement term classes
    *  on the outputted html.
@@ -41,6 +48,7 @@ class DomManager {
     this.showOriginalTerm = config.showOriginalTerm === undefined ? true : config.showOriginalTerm;
     this.stripScriptTags = config.stripScriptTags === undefined ? true : config.stripScriptTags;
     this.keepSameCase = config.keepSameCase === undefined ? true : config.keepSameCase;
+    this.suggestionMode = !!config.suggestionMode;
     this.showDictionaryKeys = !!config.showDictionaryKeys;
     this.termClass = config.termClass || 'replaced-term';
     this.ambiguousClass = config.ambiguousClass || 'ambiguous-term';
@@ -188,30 +196,47 @@ class DomManager {
 
       // For all matches, perform the replacement
       const newNodeContent = node.textContent.replace(regex, match => {
-        // Look it up in the dictionary
-        const replacementData = this.replacer
-          .getSingleReplacementData(match, dictKeyFrom, dictKeyTo);
 
         // Wrap with span and class (add ambiguous class if needed)
         const props = [];
         const cssClasses = [this.termClass];
-        if (this.showOriginalTerm) {
+        if (this.showOriginalTerm && !this.suggestionMode) {
           props.push(`title="${match}"`);
         }
+
         if (this.showDictionaryKeys) {
           // Add data- props
           props.push(`data-replaced-from="${dictKeyFrom}"`);
           props.push(`data-replaced-to="${dictKeyTo}"`);
         }
 
+        // Look it up in the dictionary
+        let replacedTerm = match;
+        let replacementData = {};
+        if (!this.suggestionMode) {
+          replacementData = this.replacer
+            .getSingleReplacementData(match, dictKeyFrom, dictKeyTo);
+
+          replacedTerm = this.keepSameCase ?
+            this.replacer.matchCase(match, replacementData.term) :
+            replacementData.term;
+        } else {
+          // Suggestion mode
+          replacementData = this.replacer
+            .getAllReplacementsData(match, dictKeyFrom, dictKeyTo);
+
+          const termList = replacementData.terms
+            .map(t => {
+              return `'${Utils.encodeHTML(t)}'`;
+            })
+            .join(',');
+          props.push(`data-replacement-options="[${termList}]"`);
+        }
+
         if (replacementData.ambiguous) {
           cssClasses.push(this.ambiguousClass);
         }
-
-        const replacedTerm = this.keepSameCase ?
-          this.replacer.matchCase(match, replacementData.term) :
-          replacementData.term;
-
+        // Replacement
         return `<span class="${cssClasses.join(' ')}" ${props.join(' ')}>${replacedTerm}</span>`;
       });
 

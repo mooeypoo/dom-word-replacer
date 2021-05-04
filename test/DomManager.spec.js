@@ -124,7 +124,41 @@ describe('DomManager test', () => {
     });
   });
 
-  describe('sanitize', () => {
+  describe('HTML suggestion mode', () => {
+    const manager = new DomManager(dictDefinition, { suggestionMode: true });
+    const testCases = [
+      {
+        msg: 'Suggested replacement with one option',
+        input: '<h1>Term1!</h1>',
+        expected: '<h1><span class="replaced-term" data-replacement-options="[\'flippedterm1\']">Term1</span>!</h1>'
+      },
+      {
+        msg: 'Suggested replacement with multiple options',
+        input: '<h1>Term2!</h1>',
+        expected: '<h1><span class="replaced-term" data-replacement-options="[\'flippedterm2opt1\',\'flippedterm2opt2\']">Term2</span>!</h1>'
+      },
+      {
+        msg: 'Suggested replacement with multiple options, ambiguous',
+        input: '<h1>Term4amb!</h1>',
+        expected: '<h1><span class="replaced-term ambiguous-term" data-replacement-options="[\'flippedterm4ambopt1\',\'flippedterm4ambopt2\']">Term4amb</span>!</h1>'
+      }
+    ];
+
+    testCases.forEach(t => {
+      const result = manager.replace(t.input, 'dict1','dict2', { replaceBothWays: !!t.both });
+      it(t.msg, () => {
+        if (Array.isArray(t.expected)) {
+          // In this case, we may have two options, so check if at least one (but no others) is correct
+          const equalsToAtLeastOne = result === wrapHtmlResult(t.expected[0]) || result === wrapHtmlResult(t.expected[1]);
+          expect(equalsToAtLeastOne).to.be.true;
+        } else {
+          expect(result).to.be.equal(wrapHtmlResult(t.expected));
+        }
+      });
+    });
+  });
+
+    describe('sanitize', () => {
     const dict = new Dictionary('test dictionary', []);
     const manager = new DomManager(dictDefinition);
     

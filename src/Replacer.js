@@ -52,6 +52,30 @@ class Replacer {
   }
 
   /**
+   * Get an object representing the data for all available
+   * replacements for the given match.
+   *
+   * @param {string} match Match to be replaced
+   * @param {string} keyFrom Dictionary key for the match
+   * @param {string} keyTo Dictionary key for the replacement
+   * @return {Object} Object representing the data for the replacement.
+   *  The object contains the term and whether it is ambiguous:
+   *  {
+   *     terms: {string[]}
+   *     ambiguous: {boolean}
+   *  }
+   */
+  getAllReplacementsData(match, keyFrom, keyTo) {
+    const data = this.dictionary.getOptions(keyFrom, match) || {};
+    const terms = data && data[keyTo];
+
+    return {
+      ambiguous: !!data.ambiguous,
+      terms: Array.isArray(terms) ? terms : [terms]
+    };
+  }
+
+  /**
    * Output the replacement text with the same approximate
    * character case of the original match.
    *
