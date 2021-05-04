@@ -1,38 +1,79 @@
-## Babel Starter Kit Change Log
-
+# Changelog
 All notable changes to this project will be documented in this file.
 
-### [Unreleased][unreleased]
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-- Allow to execute tests in a browser environment (PLANNED)
+## [Unreleased]
+### Changed
+- BREAKING: Replace `.replace(...)` method parameters with an `options` config object
 
-### [v1.2.0] - 2016-05-04
+### Added
+- Add 'suggestionMode' config option
+- Add option to mimic capitalization in replacements
+- Add jsdoc support
 
-- Add `tools/build.js` script
-- Build source files into `dist` folder
-- Update npm modules
-- Publish as CommonJS, ES2015 and UMD via [Rollup](http://rollupjs.org/). See `tools/build.js`.
+### Fixed
+- Code cleanup, add Replacer class
 
-### [v1.1.2] - 2016-04-03
+## [0.9.8] - 2021-04-22
+### Fixed
+- Code cleanup; README update, add Utils class
+- Verify case sensitivity for lookups, add tests
 
-- Add `npm run test:watch` npm script for running tests in watch mode
-- Add a recipe: Testing with `mocha` and `jsdom` 
-- Add a recipe: Throwing errors with FB's `invariant` (`fbjs`) library
-- Update `eslint` and `babel-eslint` npm modules to the latest versions
-- Update unit test code sample
-- Add [CONTRIBUTING.md](CONTRIBUTING.md) and [CHANGELOG.md](CHANGELOG.md) files
 
-### [v1.1.0] - 2016-03-31
+## [0.9.7] - 2021-04-21
+### Fixed
+- Fixed typo in entrypoint in extension.json
 
-- Add code coverage in unit tests with [Istanbul](https://github.com/gotwarlost/istanbul) and [Coveralls](https://coveralls.io/) [#8](https://github.com/kriasoft/babel-starter-kit/pull/8)
+## [0.9.6] - 2021-04-21
+### Added
+- Add 'showDictionaryKeys' config option
 
-### [v1.0.0] - 2016-03-30
+### Fixed
+- Make sure RegExp lookup ignore case sensitivity
 
-- Clean up the code and `package.json` file, update project dependencies
-- Integrate [Easystatic](https://easystatic.com) that generates a static site from the `docs/*.md` files
+### Changed
+- Build steps test and coverage changed
 
-[unreleased]: https://github.com/kriasoft/babel-starter-kit/compare/v1.2.0...HEAD
-[v1.2.0]: https://github.com/kriasoft/babel-starter-kit/compare/v1.1.2...v1.2.0
-[v1.1.2]: https://github.com/kriasoft/babel-starter-kit/compare/v1.1.0...v1.1.2
-[v1.1.0]: https://github.com/kriasoft/babel-starter-kit/compare/v1.0.0...v1.1.0
-[v1.0.0]: https://github.com/kriasoft/babel-starter-kit/compare/v0.1.1...v1.0.0
+## [0.9.5] - 2021-04-19
+### Added
+- Ability to do two-way replacements without reserializing (optimization)
+
+### Changed
+- Replace using xpath with NodeIterator (optimization)
+
+## [0.9.4] - 2021-04-19
+### Fixed
+- Replace xmlserializer with jsdom serializer to fix a bug with reserializing the DOM
+
+### Added
+- Add tests for single words inside DOM elements
+
+## [0.9.3] - 2021-04-18
+### Added
+- Add pre-publish build step to automate npm package publishing
+
+## [0.9.2] - 2021-04-18
+### Fixed
+- Add .npmignore and exclude /dist folder; make the package actually work
+
+## [0.9.1] - 2021-04-18
+### Changed
+- Change using 'alt' prop to 'title'
+- Escape search terms with word boundaries
+
+## [0.9.0] - 2021-04-18
+### Added
+- Initial test release
+
+[Unreleased]: https://github.com/mooeypoo/dom-word-replacer/compare/0.9.8...HEAD
+[0.9.8]: https://github.com/mooeypoo/dom-word-replacer/compare/0.9.7...0.9.8
+[0.9.7]: https://github.com/mooeypoo/dom-word-replacer/compare/0.9.6...0.9.7
+[0.9.6]: https://github.com/mooeypoo/dom-word-replacer/compare/0.9.5...0.9.6
+[0.9.5]: https://github.com/mooeypoo/dom-word-replacer/compare/0.9.4...0.9.5
+[0.9.4]: https://github.com/mooeypoo/dom-word-replacer/compare/0.9.3...0.9.4
+[0.9.3]: https://github.com/mooeypoo/dom-word-replacer/compare/0.9.2...0.9.3
+[0.9.2]: https://github.com/mooeypoo/dom-word-replacer/compare/0.9.1...0.9.2
+[0.9.1]: https://github.com/mooeypoo/dom-word-replacer/compare/0.9.0...0.9.1
+[0.9.0]: https://github.com/mooeypoo/dom-word-replacer/releases/tag/0.9.0
