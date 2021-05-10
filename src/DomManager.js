@@ -15,6 +15,8 @@ class DomManager {
    * @param {Object} dictionaryDefinition Replacement dictionary
    *  definition object.
    * @param {Object} [config] Configuration options
+   * @param {string} [config.tagName='span'] The tag used to wrap the
+   *  replacements that were found.
    * @param {boolean} [config.showOriginalTerm=true] Show the
    *  original term that was replaced in the title="" prop of
    *  the wrapper span.
@@ -45,6 +47,7 @@ class DomManager {
   constructor(dictionaryDefinition, config = {}) {
     this.replacer = new Replacer(dictionaryDefinition);
 
+    this.tagName = config.tagName || 'span';
     this.showOriginalTerm = config.showOriginalTerm === undefined ? true : config.showOriginalTerm;
     this.stripScriptTags = config.stripScriptTags === undefined ? true : config.stripScriptTags;
     this.keepSameCase = config.keepSameCase === undefined ? true : config.keepSameCase;
@@ -234,7 +237,7 @@ class DomManager {
 
     // Replacement
     const props = this.collectWrapperProps(match, dictKeyFrom, dictKeyTo, replacementData);
-    return `<span ${props}>${visibleTerm}</span>`;
+    return `<${this.tagName} ${props}>${visibleTerm}</${this.tagName}>`;
   }
   /**
    * Check whether the given node is relevant for replacement.

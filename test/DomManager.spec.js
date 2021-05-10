@@ -158,7 +158,43 @@ describe('DomManager test', () => {
     });
   });
 
-    describe('sanitize', () => {
+  describe('Change wrapper tag', () => {
+    const manager = new DomManager(dictDefinition, { tagName: 'abbr' });
+    const testCases = [
+      {
+        msg: 'Single replacement in h1 tag',
+        input: '<h1>Title with term1!</h1>',
+        expected: '<h1>Title with <abbr class="replaced-term" title="term1">flippedterm1</abbr>!</h1>'
+      },
+      {
+        msg: 'Multiple replacements in the same tag',
+        input: '<p>Text with term1 and term3 together</p>',
+        expected: '<p>Text with <abbr class="replaced-term" title="term1">flippedterm1</abbr> and <abbr class="replaced-term" title="term3">flippedterm3</abbr> together</p>'
+      }
+    ];
+
+    testCases.forEach(t => {
+      const result = manager.replace(t.input, 'dict1','dict2', { replaceBothWays: !!t.both });
+      it(t.msg, () => {
+        if (Array.isArray(t.expected)) {
+          // In this case, we may have two options, so check if at least one (but no others) is correct
+          const equalsToAtLeastOne = result === wrapHtmlResult(t.expected[0]) || result === wrapHtmlResult(t.expected[1]);
+          expect(equalsToAtLeastOne).to.be.true;
+        } else {
+          expect(result).to.be.equal(wrapHtmlResult(t.expected));
+        }
+      });
+    });
+
+    // Custom tag
+    const manager2 = new DomManager(dictDefinition, { tagName: 'popup' });
+    const result = manager2.replace('<h1>Title with term1!</h1>', 'dict1','dict2');
+    it('Falls back gracefully on `span` if an invalid tag is used', () => {
+      expect(result).to.be.equal(wrapHtmlResult('<h1>Title with <popup class="replaced-term" title="term1">flippedterm1</popup>!</h1>'));
+    });
+  });
+
+  describe('sanitize', () => {
     const dict = new Dictionary('test dictionary', []);
     const manager = new DomManager(dictDefinition);
     
